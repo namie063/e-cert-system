@@ -1,0 +1,3053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Barangay Palma-Urbano </title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+<style>
+  
+    /* * --- GLOBAL STYLES ---
+     * Keep these focused on the login flow appearance
+     */
+    body {
+      background-color: #f4f5f7;
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .login-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      width: 100%;
+      max-width: 420px;
+      padding: 35px 30px;
+      text-align: center;
+    }
+
+    .login-card img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-bottom: 10px;
+    }
+
+    .btn-primary {
+      background-color: #1a4de8;
+      border: none;
+      border-radius: 8px;
+      transition: 0.3s;
+    }
+
+    .btn-primary:hover {
+      background-color: #153cc2;
+    }
+
+    .btn-secondary {
+      background-color: #495057;
+      border: none;
+      border-radius: 8px;
+    }
+
+    /* --- DASHBOARD & PORTAL MAIN CONTAINER STYLES --- */
+    #dashboardSection,
+    #residentPortalSection,
+    #officialRequestsSection,
+    #officialResidentsSection,
+    #officialReportsSection { /* ADDED: Reports section */
+      display: none;
+      width: 100%;
+      height: 100vh;
+      /* Remove centering when a full screen section is active */
+      position: absolute; 
+      top: 0; 
+      left: 0;
+      align-items: initial;
+      justify-content: initial;
+    }
+
+    #dashboardContainer {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      background: #f4f5f7;
+    }
+    
+    /* --- OFFICIAL DASHBOARD SIDEBAR STYLES --- */
+    .sidebar {
+      width: 250px;
+      background-color: #0d2a73;
+      color: white;
+      position: fixed; 
+      height: 100%;
+      padding-top: 30px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .sidebar .logo-section {
+        display: flex;
+        align-items: center;
+        padding: 0 25px;
+        margin-bottom: 30px;
+    }
+
+    .sidebar .logo-section img {
+        width: 60px; 
+        height: 60px; 
+        margin-right: 10px;
+        filter: invert(1); 
+    }
+
+    .sidebar .logo-section h5 {
+        margin-bottom: 0;
+        font-weight: 600;
+        font-size: 18px;
+    }
+
+    .sidebar nav {
+        flex-grow: 1;
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      color: white;
+      padding: 12px 25px;
+      text-decoration: none;
+      transition: background 0.3s;
+      margin: 0 15px 5px 15px; 
+      border-radius: 8px;
+    }
+
+    .sidebar a i {
+        margin-right: 10px;
+        font-size: 1.1rem;
+    }
+
+    .sidebar a:hover, .sidebar a.active {
+      background-color: #1a4de8;
+    }
+    
+    .sidebar .logout-link {
+        color: #ffc107; 
+        margin-top: 15px;
+    }
+
+    .sidebar .logout-link:hover {
+        background-color: #dc3545; 
+        color: white;
+    }
+
+    .sidebar .footer-text {
+        text-align: center;
+        padding: 20px;
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.6);
+    }
+
+    .main-content {
+      margin-left: 250px;
+      flex-grow: 1; 
+      padding: 25px;
+      overflow-y: auto; 
+    }
+    /* --- END OFFICIAL DASHBOARD SIDEBAR STYLES --- */
+
+    /* --- OFFICIAL DASHBOARD CONTENT STYLES ------------------------------------------------------------------- */
+    .card {
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      border: none;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      background-color: #fff;
+      padding: 15px 25px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .topbar .search-box {
+        position: relative;
+        width: 300px;
+    }
+
+    .topbar .search-box input {
+      width: 100%;
+      border-radius: 20px;
+      padding: 8px 15px 8px 40px; 
+      border: 1px solid #e0e0e0;
+      background-color: #f9f9f9;
+    }
+
+    .topbar .search-box i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #888;
+    }
+
+    .topbar .right-elements {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .topbar .notification-icon {
+        position: relative;
+        font-size: 1.3rem;
+        color: #555;
+        cursor: pointer; /* Added cursor pointer */
+    }
+
+    .topbar .notification-icon .badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        padding: 4px 7px;
+        border-radius: 50%;
+        background-color: #f44336;
+        color: white;
+        font-size: 0.7rem;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .user-info img {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+    }
+
+    .dashboard-icon-card {
+        display: flex;
+        align-items: center;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        height: 100%;
+        gap: 15px;
+    }
+
+    .dashboard-icon-card .icon-wrapper {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.5rem;
+        color: white;
+        flex-shrink: 0; 
+    }
+
+    .dashboard-icon-card .card-content {
+        text-align: left;
+    }
+
+    .dashboard-icon-card .card-content h6 {
+        margin-bottom: 5px;
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+
+    .dashboard-icon-card .card-content h2 {
+        margin-bottom: 0;
+        font-size: 2rem;
+        font-weight: 700;
+        color: #343a40;
+    }
+
+    .icon-wrapper.pending { background-color: #ffc107; } 
+    .icon-wrapper.issued-today { background-color: #28a745; } 
+    .icon-wrapper.residents { background-color: #1a4de8; } 
+    .icon-wrapper.certificates { background-color: #6f42c1; } 
+
+    .recent-activity-item {
+        display: flex;
+        align-items: center;
+        padding: 15px 0;
+        border-bottom: 1px solid #eee;
+    }
+
+    .recent-activity-item:last-child {
+        border-bottom: none;
+    }
+
+    .recent-activity-item .activity-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #e0e7ff; 
+        color: #1a4de8;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.1rem;
+        margin-right: 15px;
+        flex-shrink: 0;
+    }
+
+    .recent-activity-item .activity-details {
+        flex-grow: 1;
+        text-align: left;
+    }
+
+    .recent-activity-item .activity-details .name {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 2px;
+    }
+
+    .recent-activity-item .activity-details .description {
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    .recent-activity-item .activity-date {
+        color: #888;
+        font-size: 0.85rem;
+        flex-shrink: 0;
+    }
+    /* --- END OFFICIAL DASHBOARD CONTENT STYLES --- */
+
+    /* --- RESIDENT PORTAL STYLES ----------------------------- */
+    #residentPortalSection {
+      
+      display: flex;
+      flex-direction: column; 
+    }
+
+    .resident-portal-navbar {
+      background-color: #fff;
+      padding: 10px 30px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .resident-portal-navbar .logo {
+        display: flex;
+        align-items: center;
+        font-weight: 600;
+        font-size: 1.2rem;
+        color: #0d2a73;
+    }
+
+    .resident-portal-navbar .logo img {
+        width: 30px;
+        height: 30px;
+        margin-right: 8px;
+    }
+
+    .resident-portal-navbar .user-logout {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .resident-portal-navbar .user-info-text {
+        text-align: right;
+        line-height: 1.2;
+    }
+    
+    .resident-portal-navbar .user-info-text .name {
+        font-weight: 600;
+        color: #333;
+    }
+    .resident-portal-navbar .user-info-text .role {
+        font-size: 0.85rem;
+        color: #6c757d;
+    }
+
+    .resident-portal-navbar .btn-logout {
+        padding: 5px 15px;
+        border-radius: 20px;
+        background-color: #f8f9fa;
+        color: #dc3545;
+        border: 1px solid #dc3545;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+    .resident-portal-navbar .btn-logout:hover {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .resident-portal-content {
+        padding: 30px;
+        max-width: 1000px;
+        margin: auto;
+        width: 100%;
+    }
+
+    .resident-portal-content .welcome-card {
+        background-color: #fff;
+        border-radius: 12px;
+        padding: 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .resident-portal-content .welcome-card h2 {
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+    
+    .resident-portal-content .welcome-card p {
+        color: #6c757d;
+        font-size: 0.95rem;
+        margin-bottom: 0;
+    }
+
+    .resident-portal-content .data-card {
+        background-color: #fff;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+    
+    .resident-portal-content .data-card h3 {
+        font-weight: 700;
+        margin-bottom: 20px;
+        font-size: 1.5rem;
+        font-family: 'spopins';
+    }
+
+    .request-table {
+        width: 100%;
+        text-align: center;
+        border-collapse: collapse;
+    }
+
+    .request-table th {
+        color: #6c757d;
+        font-size: 0.85rem;
+        font-weight: 600;
+        padding: 10px 0;
+        border-bottom: 2px solid #e9ecef;
+        text-transform: uppercase;
+    }
+
+    .request-table td {
+        padding: 15px 0; 
+        color: #343a40;
+        border-bottom: 1px solid #eee; 
+    }
+    
+    .request-table .badge {
+        padding: 8px 15px;
+        border-radius: 15px;
+        font-weight: 600;
+    }
+    
+    /* Official Requests/Residents Table Styling */
+    #officialRequestsSection .table th, 
+    #officialResidentsSection .table th,
+    #officialReportsSection .table th {
+        text-align: left;
+    }
+    #officialRequestsSection .table td,
+    #officialResidentsSection .table td,
+    #officialReportsSection .table td {
+        text-align: left;
+    }
+    #officialRequestsSection .table th:last-child, 
+    #officialRequestsSection .table td:last-child {
+        text-align: center;
+    }
+    
+    #officialRequestsSection .table .badge.bg-primary {
+        background-color: #007bff !important;
+    }
+    #officialRequestsSection .table .badge.bg-success {
+        background-color: #28a745 !important;
+    }
+    #officialRequestsSection .table .badge.bg-danger {
+        background-color: #dc3545 !important;
+    }
+    #officialRequestsSection .table .badge.bg-warning {
+        background-color: #ffc107 !important;
+    }
+
+    /* Residents table specific styles */
+    .residents-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .residents-header h4 {
+        margin-bottom: 0;
+    }
+
+    .residents-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 15px;
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+
+    .residents-footer .pagination-controls .btn {
+        background-color: #f0f0f0;
+        border: 1px solid #dee2e6;
+        color: #343a40;
+        margin-left: 5px;
+    }
+    .residents-footer .pagination-controls .btn.active {
+        background-color: #1a4de8;
+        color: white;
+        border-color: #1a4de8;
+    }
+
+    .btn-apply {
+        background-color: #1a4de8;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+    .btn-apply:hover {
+        background-color: #153cc2;
+    }
+    
+    /* MODIFICATION: Style for the new ACTIONS column in Residents Table */
+    #officialResidentsSection .table th:last-child, 
+    #officialResidentsSection .table td:last-child {
+        text-align: center; 
+        width: 120px; 
+    }
+    /* --- END RESIDENT PORTAL STYLES --- */
+
+    /* APPLICATION MODAL STYLES  */
+    .modal-content-card {
+      border-radius: 12px; 
+    }
+    
+    /* NEW: Style for pending residents */
+    .pending-resident-row {
+        background-color: #fff3cd; /* Light warning color */
+        border-left: 5px solid #ffc107;
+    }
+
+    /* NEW: Style for validation error messages */
+    .validation-error {
+        color: #dc3545;
+        font-size: 0.8rem;
+        margin-top: 5px;
+        display: none; /* Initially hidden */
+    }
+
+    @media (max-height: 700px) {
+      body {
+        align-items: flex-start;
+        padding-top: 30px;
+      }
+    }
+    
+    /* --- NOTIFICATION SIDEBAR MODAL STYLES (NEW) --- */
+    .notification-sidebar {
+        position: fixed;
+        top: 0;
+        right: -350px; /* Initially off-screen */
+        width: 330px; 
+        height: 100%;
+        background: #fff;
+        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+        transition: right 0.3s ease-in-out;
+        z-index: 1050; /* Above regular modals */
+        display: flex;
+        flex-direction: column;
+    }
+
+    .notification-sidebar.open {
+        right: 0; /* Slide in */
+    }
+
+    .notification-sidebar .header {
+        padding: 20px 20px 10px 20px;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .notification-sidebar .header h5 {
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .notification-sidebar .close-btn {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: #999;
+        cursor: pointer;
+    }
+
+    .notification-sidebar .content {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding: 0 20px 20px 20px;
+    }
+
+    .alert-group-title {
+        font-weight: 600;
+        font-size: 0.8rem;
+        color: #6c757d;
+        text-transform: uppercase;
+        margin-top: 15px;
+        margin-bottom: 5px;
+    }
+
+    .alert-item {
+        display: flex;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .alert-item:last-of-type {
+        border-bottom: none;
+    }
+
+    .alert-item .icon-wrapper {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.2rem;
+        margin-right: 15px;
+        flex-shrink: 0;
+        background-color: #e0e7ff; /* Default light blue */
+        color: #1a4de8; /* Default dark blue */
+    }
+
+    /* Custom icon colors based on type or status */
+    .alert-item.pending .icon-wrapper { 
+        background-color: #fff3cd; 
+        color: #ffc107; 
+    }
+    .alert-item.approved .icon-wrapper { 
+        background-color: #d4edda; 
+        color: #28a745; 
+    }
+    .alert-item.payment .icon-wrapper { 
+        background-color: #d1ecf1; 
+        color: #17a2b8; 
+    }
+
+
+    .alert-item .details {
+        flex-grow: 1;
+    }
+
+    .alert-item .details .title {
+        font-weight: 600;
+        font-size: 0.95rem;
+        margin-bottom: 2px;
+        color: #343a40;
+    }
+
+    .alert-item .details .description {
+        font-size: 0.8rem;
+        color: #6c757d;
+        line-height: 1.2;
+    }
+
+    .alert-item .time {
+        font-size: 0.75rem;
+        color: #888;
+        margin-left: 10px;
+        flex-shrink: 0;
+        text-align: right;
+    }
+
+    .alert-item .view-link {
+        font-size: 0.8rem;
+        color: #1a4de8;
+        text-decoration: none;
+        display: block;
+        margin-top: 2px;
+    }
+
+    /* Backdrop for the sidebar modal */
+    .modal-backdrop.notification-backdrop {
+        z-index: 1040; /* Needs to be below the modal (1050) */
+    }
+</style>
+<body>
+
+  <div class="login-card" id="roleSelectionCard">
+    <img src="logo.png" alt="Barangay Logo" />
+    <h4>Barangay Palma-Urbano</h4>
+    <h5>Select Your Role</h5>
+
+    <div class="d-grid gap-2">
+      <button class="btn btn-primary" onclick="showOfficialLogin()">Login as Official</button>
+      <button class="btn btn-secondary" onclick="showResidentLogin()">Login as Resident</button>
+    </div>
+
+    <hr />
+    <p>For authorized personnel and residents only.</p>
+  </div>
+  <section id="officialLoginSection">
+    <div class="login-card">
+      <img src="logo.png" alt="Barangay Logo" />
+      <h4>Barangay Palma-Urbano</h4>
+      <h5>Official Login</h5>
+
+       <form onsubmit="handleOfficialLogin(event)">
+        <div class="mb-3 text-start">
+          <label for="officialUsername" class="form-label">Username</label>
+          <input type="text" class="form-control" id="officialUsername" required />
+        </div>
+        <div class="mb-3 text-start">
+          <label for="officialPassword" class="form-label">Password</label>
+          <input type="password" class="form-control" id="officialPassword" required />
+        </div>
+        <div id="officialLoginError" class="alert alert-danger p-2 text-start" role="alert" style="display:none; font-size: 0.9rem;">
+          Incorrect username or password.
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Login</button>
+      </form>
+
+      <button class="btn btn-link w-100 mt-3" onclick="goBackToRoleSelection()">
+        <i class="fas fa-arrow-left"></i> Go back
+      </button>
+      </div>
+  </section>
+  <section id="residentLoginSection">
+    <div class="login-card">
+      <img src="logo.png" alt="Barangay Logo" />
+      <h4>Barangay Palma-Urbano</h4>
+      <h5>Resident Login</h5>
+
+      <form onsubmit="handleResidentLogin(event)">
+        <div class="mb-3 text-start">
+          <label for="residentUsername" class="form-label">Username</label>
+          <input type="text" class="form-control" id="residentUsername" required/>
+        </div>
+        <div class="mb-3 text-start">
+          <label for="residentPassword" class="form-label">Password</label>
+          <input type="password" class="form-control" id="residentPassword" required/>
+        </div>
+        <div id="residentLoginError" class="alert alert-danger p-2 text-start" role="alert" style="display:none; font-size: 0.9rem;">
+          Resident not found. Please sign up or contact the barangay staff.
+          </div>
+        <button type="submit" class="btn btn-secondary w-100">Login</button>
+      </form>
+
+      <p class="mt-3">
+        Don’t have an account? <a href="#" onclick="showResidentSignup()">Sign Up</a><br />
+        <button class="btn btn-link w-100" onclick="goBackToRoleSelection()">
+          <i class="fas fa-arrow-left"></i> Go back
+        </button>
+        </p>
+    </div>
+  </section>
+  <section id="residentSignupSection">
+    <div class="login-card">
+      <img src="logo.png" alt="Barangay Logo" />
+      <h4>Barangay Palma-Urbano</h4>
+      <h5>Resident Sign Up</h5>
+
+      <form onsubmit="handleResidentSignup(event)">
+        <div class="mb-3 text-start">
+          <label class="form-label">Last Name</label>
+          <input type="text" class="form-control" id="signupLastName" placeholder="Dela Cruz" required pattern="[A-Za-z\s-']+" title="Letters, spaces, hyphens, and apostrophes only."/>
+          <div class="validation-error" id="error-signupLastName"></div>
+        </div>
+        <div class="mb-3 text-start">
+          <label class="form-label">First Name</label>
+          <input type="text" class="form-control" id="signupFirstName" placeholder="Juan" required pattern="[A-Za-z\s-']+" title="Letters, spaces, hyphens, and apostrophes only."/>
+          <div class="validation-error" id="error-signupFirstName"></div>
+        </div>
+        <div class="mb-3 text-start">
+          <label class="form-label">Middle Name (Optional)</label>
+          <input type="text" class="form-control" id="signupMiddleName" placeholder="Perez (Optional)" pattern="[A-Za-z\s-']*" title="Letters, spaces, hyphens, and apostrophes only."/>
+          <div class="validation-error" id="error-signupMiddleName"></div>
+        </div>
+        <div class="mb-3 text-start">
+          <label class="form-label">Age</label>
+          <input type="text" class="form-control" id="signupAge" placeholder="e.g., 30" min="1" max="120" required pattern="[0-9]+" title="Numbers only."/>
+          <div class="validation-error" id="error-signupAge"></div>
+        </div>
+        <div class="mb-3 text-start">
+          <label class="form-label">Address</label>
+          <input type="text" class="form-control" id="signupAddress" placeholder="123 Rizal St" required/>
+          <div class="validation-error" id="error-signupAddress"></div>
+        </div>
+        <div class="mb-3 text-start">
+          <label class="form-label">Contact Number</label>
+          <input type="text" class="form-control" id="signupContact" placeholder="09171234567" required pattern="[0-9]{7,15}" title="Numbers only, 7 to 15 digits."/>
+          <div class="validation-error" id="error-signupContact"></div>
+        </div>
+        <div class="mb-3 text-start">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-control" id="signupEmail" placeholder="juan@email.com" required title="Must contain '@'"/>
+          <div class="validation-error" id="error-signupEmail"></div>
+        </div>
+        <div class="mb-3 text-start">
+          <label class="form-label">Username</label>
+          <input type="text" class="form-control" id="signupUsername" required/>
+          <div class="validation-error" id="error-signupUsername"></div>
+        </div>
+        <div class="mb-3 text-start">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-control" id="signupPassword" required/>
+          <div class="validation-error" id="error-signupPassword"></div>
+        </div>
+        <div class="mb-3 text-start">
+          <label class="form-label">Confirm Password</label>
+          <input type="password" class="form-control" id="signupConfirmPassword" required/>
+          <div class="validation-error" id="error-signupConfirmPassword"></div>
+        </div>
+        <button type="submit" class="btn btn-primary w-100 mt-3">Sign Up</button>
+      </form>
+
+      <p class="mt-3">
+        Already have an account? <a href="#" onclick="showResidentLogin()">Login</a><br />
+        <button class="btn btn-link w-100" onclick="goBackToRoleSelection()">
+          <i class="fas fa-arrow-left"></i> Go back
+        </button>
+        </p>
+    </div>
+  </section>
+  <section id="dashboardSection">
+    <div id="dashboardContainer">
+      <div class="sidebar">
+        <div>
+            <div class="logo-section">
+                <img src="logo.png" alt="House Icon">
+                <h5>Palma-Urbano</h5>
+            </div>
+            <nav>
+                <a href="#" class="active" id="navDashboard" onclick="showOfficialDashboard()"><i class="fas fa-chart-line"></i> Dashboard</a>
+                <a href="#" id="navRequests" onclick="showOfficialRequests()"><i class="fas fa-file-alt"></i> Requests</a>
+                <a href="#" id="navResidents" onclick="showOfficialResidents()"><i class="fas fa-users"></i> Residents</a>
+                <a href="#" id="navReports" onclick="showOfficialReports()"><i class="fas fa-chart-bar"></i> Reports</a>
+                <a href="#" class="logout-link" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </nav>
+        </div>
+        <div class="footer-text">
+            © 2025 Alrights Reserved.
+        </div>
+      </div>
+
+      <div class="main-content">
+        <div class="topbar">
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search..." />
+          </div>
+          <div class="right-elements">
+            <div class="notification-icon" onclick="toggleNotificationSidebar(true)">
+                <i class="fas fa-bell"></i>
+                <span class="badge" id="notificationBadge">3</span>
+            </div>
+            <div class="user-info">
+              <img src="logo.png" alt="User" />
+              <span id="officialUserName">Rose (Barangay Official)</span> 
+            </div>
+          </div>
+        </div>
+
+        <h4>Dashboard Overview</h4>
+
+        <div class="row g-3 mb-4">
+          <div class="col-md-3">
+            <div class="dashboard-icon-card">
+                <div class="icon-wrapper pending">
+                    <i class="fas fa-hourglass-half"></i>
+                </div>
+                <div class="card-content">
+                    <h6>Pending Requests</h6>
+                    <h2 id="pendingRequestsCount">2</h2>
+                </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="dashboard-icon-card">
+                <div class="icon-wrapper issued-today">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="card-content">
+                    <h6>Issued Today</h6>
+                    <h2>0</h2>
+                </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="dashboard-icon-card">
+                <div class="icon-wrapper residents">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="card-content">
+                    <h6>Total Residents</h6>
+                    <h2 id="totalResidentsCount">7</h2>
+                </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="dashboard-icon-card">
+                <div class="icon-wrapper certificates">
+                    <i class="fas fa-certificate"></i>
+                </div>
+                <div class="card-content">
+                    <h6>Total Certificates Issued</h6>
+                    <h2>2</h2>
+                </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+          <div class="col-md-8">
+            <div class="card p-3">
+              <h6>Weekly Request Volume</h6>
+              <div style="height: 300px;"><canvas id="barChart"></canvas></div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card p-3">
+              <h6>Certificate Distribution</h6>
+              <div style="height: 300px;"><canvas id="pieChart"></canvas></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-12">
+                <div class="card p-3">
+                    <h6>Recent Activity</h6>
+                    <div id="recentActivityContainer">
+              
+                        </div>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </section>
+<section id="officialRequestsSection" style="display: none;">
+    <div id="dashboardContainer">
+      <div class="sidebar">
+        <div>
+            <div class="logo-section">
+                <img src="logo.png" alt="House Icon">
+                <h5>Palma-Urbano</h5>
+            </div>
+            <nav>
+                <a href="#" id="navDashboardReq" onclick="showOfficialDashboard()"><i class="fas fa-chart-line"></i> Dashboard</a>
+                <a href="#" class="active" id="navRequestsReq" onclick="showOfficialRequests()"><i class="fas fa-file-alt"></i> Requests</a>
+                <a href="#" id="navResidentsRes" onclick="showOfficialResidents()"><i class="fas fa-users"></i> Residents</a>
+                <a href="#" id="navReports" onclick="showOfficialReports()"><i class="fas fa-chart-bar"></i> Reports</a>
+                <a href="#" class="logout-link" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </nav>
+        </div>
+        <div class="footer-text">
+            © 2025 Alrights Reserved.
+        </div>
+      </div>
+
+      <div class="main-content">
+        <div class="topbar">
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search..." id="officialRequestsSearchInput" onkeyup="filterOfficialRequests()" />
+          </div>
+          <div class="right-elements">
+            <div class="notification-icon" onclick="toggleNotificationSidebar(true)">
+                <i class="fas fa-bell"></i>
+                <span class="badge" id="notificationBadgeReq">3</span>
+            </div>
+            <div class="user-info">
+              <img src="logo.png" alt="User" />
+              <span id="officialUserNameReq">Rose (Barangay Official)</span> 
+            </div>
+          </div>
+        </div>
+
+        <div class="data-card p-4">
+            <div class="residents-header">
+                <h4>Certificate Requests</h4>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newRequestModal"><i class="fas fa-plus me-2"></i>New Certificate Request</button>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover table-borderless">
+                    <thead>
+                        <tr>
+                            <th>REQUEST ID</th>
+                            <th>RESIDENT</th>
+                            <th>CERTIFICATE TYPE</th>
+                            <th>DATE</th>
+                            <th>STATUS</th>
+                            <th>ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="officialRequestsTbody">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="officialResidentsSection" style="display: none;">
+    <div id="dashboardContainer">
+      <div class="sidebar">
+        <div>
+            <div class="logo-section">
+                <img src="logo.png" alt="House Icon">
+                <h5>Palma-Urbano</h5>
+            </div>
+            <nav>
+                <a href="#" id="navDashboardRes" onclick="showOfficialDashboard()"><i class="fas fa-chart-line"></i> Dashboard</a>
+                <a href="#" id="navRequestsRes" onclick="showOfficialRequests()"><i class="fas fa-file-alt"></i> Requests</a>
+                <a href="#" class="active" id="navResidentsRes" onclick="showOfficialResidents()"><i class="fas fa-users"></i> Residents</a>
+                <a href="#" id="navReports" onclick="showOfficialReports()"><i class="fas fa-chart-bar"></i> Reports</a>
+                <a href="#" class="logout-link" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </nav>
+        </div>
+        <div class="footer-text">
+            © 2025 Alrights Reserved.
+        </div>
+      </div>
+
+      <div class="main-content">
+        <div class="topbar">
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search..." id="officialResidentsSearchInput" onkeyup="filterOfficialResidents()" />
+          </div>
+          <div class="right-elements">
+            <div class="notification-icon" onclick="toggleNotificationSidebar(true)">
+                <i class="fas fa-bell"></i>
+                <span class="badge" id="notificationBadgeRes">3</span>
+            </div>
+            <div class="user-info">
+              <img src="logo.png" alt="User" />
+              <span id="officialUserNameRes">Rose (Barangay Official)</span> 
+            </div>
+          </div>
+        </div>
+
+        <div class="data-card p-4">
+            <div class="residents-header">
+                <h4>Registered Residents & Signups</h4>
+                <button class="btn btn-primary" onclick="openAddResidentModal()"><i class="fas fa-plus me-2"></i>Add Resident</button>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover table-borderless">
+                    <thead>
+                        <tr>
+                            <th>NAME</th>
+                            <th>AGE</th> <th>ADDRESS</th>
+                            <th>CONTACT</th>
+                            <th>EMAIL</th>
+                            <th>USERNAME</th>
+                            <th>STATUS</th> <th>ACTIONS</th>
+                            </tr>
+                    </thead>
+                    <tbody id="officialResidentsTbody">
+                        </tbody>
+                </table>
+            </div>
+            <div class="residents-footer">
+                <span id="residentsCountText">Showing 0 to 0 of 0 Results</span>
+                <div class="pagination-controls">
+                    <button class="btn btn-sm active">1</button>
+                    </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <section id="officialReportsSection" style="display: none;">
+    <div id="dashboardContainer">
+      <div class="sidebar">
+        <div>
+            <div class="logo-section">
+                <img src="logo.png" alt="House Icon">
+                <h5>Palma-Urbano</h5>
+            </div>
+            <nav>
+                <a href="#" id="navDashboardRpt" onclick="showOfficialDashboard()"><i class="fas fa-chart-line"></i> Dashboard</a>
+                <a href="#" id="navRequestsRpt" onclick="showOfficialRequests()"><i class="fas fa-file-alt"></i> Requests</a>
+                <a href="#" id="navResidentsRpt" onclick="showOfficialResidents()"><i class="fas fa-users"></i> Residents</a>
+                <a href="#" class="active" id="navReports" onclick="showOfficialReports()"><i class="fas fa-chart-bar"></i> Reports</a>
+                <a href="#" class="logout-link" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </nav>
+        </div>
+        <div class="footer-text">
+            © 2025 Alrights Reserved.
+        </div>
+      </div>
+
+      <div class="main-content">
+        <div class="topbar">
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search Reports..." disabled />
+          </div>
+          <div class="right-elements">
+            <div class="notification-icon" onclick="toggleNotificationSidebar(true)">
+                <i class="fas fa-bell"></i>
+                <span class="badge" id="notificationBadgeRpt">3</span>
+            </div>
+            <div class="user-info">
+              <img src="logo.png" alt="User" />
+              <span id="officialUserNameRpt">Rose (Barangay Official)</span> 
+            </div>
+          </div>
+        </div>
+
+        <h4>Barangay Reports and Summaries</h4>
+
+        <div class="row g-3 mb-4">
+          <div class="col-md-4">
+            <div class="dashboard-icon-card">
+                <div class="icon-wrapper residents">
+                    <i class="fas fa-home"></i>
+                </div>
+                <div class="card-content">
+                    <h6>Total Households</h6>
+                    <h2 id="reportTotalHouseholds">N/A</h2>
+                </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="dashboard-icon-card">
+                <div class="icon-wrapper issued-today">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="card-content">
+                    <h6>Requests Issued (YTD)</h6>
+                    <h2 id="reportIssuedYTD">N/A</h2>
+                </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="dashboard-icon-card">
+                <div class="icon-wrapper pending">
+                    <i class="fas fa-id-badge"></i>
+                </div>
+                <div class="card-content">
+                    <h6>Pending Resident Signups</h6>
+                    <h2 id="reportPendingSignups">N/A</h2>
+                </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="row g-3">
+          <div class="col-md-6">
+             <div class="card p-4">
+                 <h5>Resident Population Summary</h5>
+                 <p class="text-muted">Breakdown by Registration Status and Age Group.</p>
+                 <div class="table-responsive">
+                     <table class="table table-sm table-hover">
+                         <tbody id="residentSummaryTable">
+                             </tbody>
+                     </table>
+                 </div>
+             </div>
+          </div>
+          <div class="col-md-6">
+             <div class="card p-4">
+                 <h5>Monthly Request Volume</h5>
+                 <p class="text-muted">Certificate requests approved/issued per month.</p>
+                 <div style="height: 250px;"><canvas id="monthlyRequestChart"></canvas></div>
+             </div>
+          </div>
+        </div>
+        
+        <div class="row g-3 mt-3">
+            <div class="col-12">
+                 <div class="card p-4">
+                    <h5>Detailed Certificate Issuance Log</h5>
+                    <div class="table-responsive">
+                         <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>DATE ISSUED</th>
+                                    <th>CERTIFICATE TYPE</th>
+                                    <th>RESIDENT</th>
+                                    <th>PURPOSE</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reportIssuanceLogTbody">
+                                </tbody>
+                         </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+      </div>
+    </div>
+  </section>
+  
+  <section id="residentPortalSection">
+    <nav class="resident-portal-navbar">
+        <div class="logo">
+            <img src="logo.png" alt="logo">
+            <span>Palma-Urbano Portal</span>
+        </div>
+        <div class="user-logout">
+            <div class="user-info-text">
+                <div class="name" id="portalUserName">Resident User</div>
+                <div class="role">Resident</div>
+            </div>
+            <button class="btn btn-outline-danger btn-sm btn-logout" onclick="handleLogout()">Logout</button>
+        </div>
+    </nav>
+
+    <div class="resident-portal-content">
+        <div class="welcome-card">
+            <div>
+                <h2 id="welcomeHeading">Welcome!</h2>
+                <p id="welcomeText">Manage your certificate requests here.</p>
+            </div>
+            <button class="btn btn-primary btn-apply" onclick="openApplicationModal()">Apply for New Certificate</button>
+        </div>
+
+        <div class="data-card">
+            <h3>My Certificate Requests</h3>
+            <div class="table-responsive">
+                <table class="request-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Certificate Type</th>
+                            <th>Date Requested</th>
+                            <th>Status</th>
+                            <th>Purpose</th>
+                        </tr>
+                    </thead>
+                    <tbody id="residentRequestsTbody">
+                        <tr>
+                            <td colspan="5" class="text-muted">You have not made any requests yet.</td>
+                        </tr>
+                    </tbody >
+                </table>
+            </div>
+        </div>
+    </div>
+  </section>
+  
+  <div class="modal fade" id="applicationModal" tabindex="-1" aria-labelledby="applicationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content modal-content-card">
+        <form id="applicationForm" onsubmit="handleSubmitRequest(event)">
+        <div class="modal-header">
+            <h5 class="modal-title" id="applicationModalLabel">Apply for a Certificate</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+
+         <div class="modal-body">
+            <h6>Applicant Details</h6>
+            <div class="mb-3" id="applicantFullNameGroup">
+              <label class="form-label">Full Name</label>
+              <input id="applicantFullName" type="text" class="form-control" placeholder="Enter your full name (as per record)" required readonly disabled>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Address</label>
+              <input id="applicantAddress" type="text" class="form-control" placeholder="Enter your complete address" required readonly disabled>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Contact Number</label>
+              <input id="applicantContact" type="text" class="form-control" placeholder="e.g., 0917xxxxxxx" required readonly disabled>
+            </div>
+            <hr>
+            <h6>Request Details</h6>
+            <div class="mb-3">
+              <label class="form-label">Certificate Type</label>
+              <select id="certificateTypeSelect" class="form-select" required>
+                <option value="" disabled selected>Select certificate type</option>
+                <option value="Barangay Clearance">Barangay Clearance</option>
+                <option value="Certificate of Indigency">Certificate of Indigency</option>
+                <option value="Certificate of Residency">Certificate of Residency</option>
+                <option value="Business Permit">Business Permit</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Purpose</label>
+              <textarea id="requestPurpose" class="form-control" rows="3" placeholder="e.g., For job application, medical assistance, etc." required></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary">Submit Request</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal fade" id="addResidentModal" tabindex="-1" aria-labelledby="addResidentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content modal-content-card">
+        <form id="addResidentForm" onsubmit="handleAddResident(event)">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title" id="addResidentModalLabel"><i class="fas fa-user-plus me-2"></i> Add New Resident</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label">Last Name</label>
+              <input type="text" class="form-control" id="addResidentLastName" placeholder="Dela Cruz" required>
+              <div class="validation-error" id="error-addResidentLastName"></div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">First Name</label>
+              <input type="text" class="form-control" id="addResidentFirstName" placeholder="Juan" required>
+              <div class="validation-error" id="error-addResidentFirstName"></div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Middle Name (Optional)</label>
+              <input type="text" class="form-control" id="addResidentMiddleName" placeholder="Perez (Optional)">
+              <div class="validation-error" id="error-addResidentMiddleName"></div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Age</label>
+              <input type="number" class="form-control" id="addResidentAge" placeholder="e.g., 30" min="1" max="120" required>
+              <div class="validation-error" id="error-addResidentAge"></div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Address</label>
+              <input type="text" class="form-control" id="addResidentAddress" placeholder="123 Rizal St" required>
+              <div class="validation-error" id="error-addResidentAddress"></div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Contact Number</label>
+              <input type="text" class="form-control" id="addResidentContact" placeholder="09171234567" required>
+              <div class="validation-error" id="error-addResidentContact"></div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" id="addResidentEmail" placeholder="juan@email.com" required>
+              <div class="validation-error" id="error-addResidentEmail"></div>
+            </div>
+            <hr>
+            <h6>Account Credentials (Required for Resident Portal Login)</h6>
+            <div class="mb-3">
+              <label class="form-label">Username</label>
+              <input type="text" class="form-control" id="addResidentUsername" required>
+              <div class="validation-error" id="error-addResidentUsername"></div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Password</label>
+              <input type="password" class="form-control" id="addResidentPassword" required>
+              <div class="validation-error" id="error-addResidentPassword"></div>
+            </div>
+            </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Resident</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="editResidentModal" tabindex="-1" aria-labelledby="editResidentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content modal-content-card">
+        <form id="editResidentForm" onsubmit="handleEditResident(event)">
+          <div class="modal-header bg-warning text-dark">
+            <h5 class="modal-title" id="editResidentModalLabel"><i class="fas fa-edit me-2"></i> Edit Resident</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" id="editResidentId">
+            <div class="mb-3">
+              <label class="form-label">Last Name</label>
+              <input id="editResidentLastName" type="text" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">First Name</label>
+              <input id="editResidentFirstName" type="text" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Middle Name (Optional)</label>
+              <input id="editResidentMiddleName" type="text" class="form-control">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Age</label>
+              <input id="editResidentAge" type="number" class="form-control" min="1" max="120" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Address</label>
+              <input id="editResidentAddress" type="text" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Contact Number</label>
+              <input id="editResidentContact" type="text" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input id="editResidentEmail" type="email" class="form-control" readonly disabled>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Username</label>
+              <input id="editResidentUsername" type="text" class="form-control" readonly disabled>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary">Update Resident</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="requestDetailsModal" tabindex="-1" aria-labelledby="requestDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content modal-content-card">
+        <div class="modal-header">
+          <h5 class="modal-title" id="requestDetailsModalLabel">Request Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="data-card p-4">
+            <p><strong>Request ID:</strong> <span id="detailRequestId"></span></p>
+            <p><strong>Resident Name:</strong> <span id="detailResidentName"></span></p>
+            <p><strong>Certificate Type:</strong> <span id="detailCertificateType"></span></p>
+            <p><strong>Purpose:</strong> <span id="detailPurpose"></span></p>
+            <p><strong>Date Requested:</strong> <span id="detailDateRequested"></span></p>
+            <p><strong>Status:</strong> <span id="detailStatusBadge" class="badge"></span></p>
+            <p><strong>Notes:</strong> <span id="detailNotes">N/A</span></p>
+            <hr>
+            <div class="text-center">
+              <button class="btn btn-success me-2" onclick="updateRequestStatusFromModal('Approved')">Approve Request</button>
+              <button class="btn btn-danger" onclick="updateRequestStatusFromModal('Denied')">Deny Request</button>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="newRequestModal" tabindex="-1" aria-labelledby="newRequestModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content modal-content-card">
+        <form id="officialApplicationForm" onsubmit="handleOfficialSubmitRequest(event)">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title" id="newRequestModalLabel"><i class="fas fa-file-alt me-2"></i> Create New Certificate Request (Official)</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row mb-3 g-3">
+              <h6>Requestor Details</h6>
+              <div class="col-12">
+                <label for="officialRequestorSelect" class="form-label">Select Resident</label>
+                <select id="officialRequestorSelect" class="form-select" required>
+                  <option value="" disabled selected>Choose a registered resident...</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label for="officialRequestorName" class="form-label">Full Name (Auto-filled)</label>
+                <input type="text" class="form-control" id="officialRequestorName" readonly disabled>
+              </div>
+              <div class="col-md-6">
+                <label for="officialEmailAddress" class="form-label">Email (Auto-filled)</label>
+                <input type="email" class="form-control" id="officialEmailAddress" readonly disabled>
+              </div>
+              <div class="col-md-6">
+                <label for="officialRequestorAddress" class="form-label">Address (Auto-filled)</label>
+                <input type="text" class="form-control" id="officialRequestorAddress" readonly disabled>
+              </div>
+              <div class="col-md-6">
+                <label for="officialContactNumber" class="form-label">Contact Number (Auto-filled)</label>
+                <input type="text" class="form-control" id="officialContactNumber" readonly disabled>
+              </div>
+            </div>
+            
+            <hr>
+            <h6>Request Details</h6>
+            <div class="row mb-3 g-3">
+              <div class="col-md-6">
+                <label for="officialCertificateTypeSelect" class="form-label">Certificate Type</label>
+                <select id="officialCertificateTypeSelect" class="form-select" required>
+                  <option value="" disabled selected>Select certificate type</option>
+                  <option value="Barangay Clearance">Barangay Clearance</option>
+                  <option value="Certificate of Indigency">Certificate of Indigency</option>
+                  <option value="Certificate of Residency">Certificate of Residency</option>
+                  <option value="Barangay Business Permit">Barangay Business Permit</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label for="officialPurpose" class="form-label">Purpose of Request</label>
+                <input type="text" class="form-control" id="officialPurpose" placeholder="e.g., Employment, School Requirement, etc." required>
+              </div>
+              <div class="col-12">
+                <label for="officialNotes" class="form-label">Additional Notes / Specification (Optional)</label>
+                <textarea class="form-control" id="officialNotes" rows="3" placeholder="Include any specific details needed for the certificate (e.g., for financial aid, name of school, etc.)"></textarea>
+              </div>
+            </div>
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="checkbox" value="" id="officialMarkAsApproved" checked>
+              <label class="form-check-label small" for="officialMarkAsApproved"> Mark request status as **Approved** immediately upon submission (for official records). </label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times me-2"></i> Cancel</button>
+            <button type="submit" class="btn btn-success"><i class="fas fa-paper-plane me-2"></i> Submit Request</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="notification-sidebar" id="notificationSidebar">
+      <div class="header">
+          <h5 id="sidebarAlertsTitle">Alerts (0)</h5>
+          <button type="button" class="close-btn" onclick="toggleNotificationSidebar(false)">
+              <i class="fas fa-times"></i>
+          </button>
+      </div>
+      <div class="content" id="alertsContent">
+          <div class="alert-group-title">TODAY</div>
+      </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // === GLOBAL CONSTANTS & VARIABLES ===
+    const REQUESTS_STORAGE_KEY = 'barangayCertRequests';
+    const RESIDENTS_STORAGE_KEY = 'barangayResidents';
+    var allRequests = [];
+    var allResidents = [];
+    var currentResidentUsername = "";
+
+    // Static residents are now empty
+    const staticResidents = [];
+    const staticOfficialRequests = [];
+
+    // === LOCAL STORAGE FUNCTIONS ===
+function loadDataFromStorage() {
+  try {
+    const storedRequests = localStorage.getItem(REQUESTS_STORAGE_KEY);
+    allRequests = storedRequests ? JSON.parse(storedRequests) : [...staticOfficialRequests];
+  } catch(e) {
+    console.error("Error loading requests from storage", e);
+    allRequests = [...staticOfficialRequests];
+  }
+  
+  // NEW: Load the residents data from local storage
+  try {
+      const storedResidents = localStorage.getItem(RESIDENTS_STORAGE_KEY);
+      allResidents = storedResidents ? JSON.parse(storedResidents) : [...staticResidents];
+      
+      // NEW: Ensure existing static residents get an 'Approved' status if they don't have one
+      allResidents = allResidents.map(r => ({
+          ...r,
+          status: r.status || 'Registered' // Default to 'Registered' for existing ones without status
+      }));
+  } catch(e) {
+      console.error("Error loading residents from storage", e);
+      allResidents = [...staticResidents];
+  }
+}
+   function saveDataToStorage() {
+  try {
+    localStorage.setItem(REQUESTS_STORAGE_KEY, JSON.stringify(allRequests));
+    // NEW: Save the residents data to local storage
+    localStorage.setItem(RESIDENTS_STORAGE_KEY, JSON.stringify(allResidents));
+  } catch(e) {
+    console.error("Error saving data to storage", e);
+  }
+}
+    // === UTILITY FUNCTIONS ===
+    function showSection(id, isFullScreen = false) {
+      const sections = ['roleSelectionCard', 'officialLoginSection', 'residentLoginSection', 'residentSignupSection', 'dashboardSection', 'residentPortalSection', 'officialRequestsSection', 'officialResidentsSection', 'officialReportsSection'];
+      sections.forEach(sectionId => {
+        const el = document.getElementById(sectionId);
+        if (el) el.style.display = 'none';
+      });
+
+      // Show the target section
+      const targetEl = document.getElementById(id);
+      if (targetEl) targetEl.style.display = id === 'roleSelectionCard' ? 'block' : 'flex'; // Use initial or centered alignment based on view type
+
+      document.body.style.alignItems = isFullScreen ? 'initial' : 'center';
+      document.body.style.justifyContent = isFullScreen ? 'initial' : 'center';
+
+      // Hide Resident Login Error when changing sections
+      if (id !== 'residentLoginSection') {
+        const errorDiv = document.getElementById('residentLoginError');
+        if (errorDiv) errorDiv.style.display = 'none';
+      }
+      
+      // Close sidebar when switching main sections
+      toggleNotificationSidebar(false); 
+      
+      // NEW: Clear signup validation errors when leaving the signup section
+      if (id !== 'residentSignupSection') {
+          clearValidationErrors('signup');
+      }
+      // NEW: Clear add resident validation errors when navigating away
+      if (id !== 'officialResidentsSection') {
+          clearValidationErrors('addResident');
+      }
+    }
+
+    const goBackToRoleSelection = () => showSection('roleSelectionCard');
+    const showOfficialLogin = () => showSection('officialLoginSection');
+    const showResidentLogin = () => showSection('residentLoginSection');
+    const showResidentSignup = () => showSection('residentSignupSection');
+
+  function handleLogout() {
+  // Directly returns to the role selection screen without a popup confirmation
+  goBackToRoleSelection();
+}
+
+    // Official Dashboard Navigation
+    function showOfficialView(sectionId, navId) {
+      showSection(sectionId, true); // Show the main section
+      document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+      const navElement = document.getElementById(navId);
+      if(navElement) navElement.classList.add('active');
+
+      const adminName = document.getElementById('officialUserName').textContent;
+      // Keep using the pending requests count for the badge logic
+      const pendingRequestsCount = allRequests.filter(req => req.status === 'Pending').length; 
+    
+      // NEW: Calculate total alerts (Requests + Pending Signups) for the badge
+      const totalAlertsCount = pendingRequestsCount + 
+                             allResidents.filter(r => r.status === 'Pending').length;
+
+      // Update Topbar elements (Name and Badge) across all official views (Dashboard, Requests, Residents, Reports)
+      ['', 'Req', 'Res', 'Rpt'].forEach(suffix => {
+        const nameEl = document.getElementById(`officialUserName${suffix}`);
+        const badgeEl = document.getElementById(`notificationBadge${suffix}`);
+        if (nameEl) nameEl.textContent = adminName;
+        // USE totalAlertsCount for the badge
+        if (badgeEl) badgeEl.textContent = totalAlertsCount;
+      });
+
+      // Section-specific initialization
+      if (sectionId === 'dashboardSection') {
+        updateDashboardMetrics();
+        initializeCharts();
+      } else if (sectionId === 'officialRequestsSection') {
+        // Clear search input on navigation
+        document.getElementById('officialRequestsSearchInput').value = '';
+        redrawOfficialRequestsTable();
+      } else if (sectionId === 'officialResidentsSection') {
+        // Clear search input on navigation
+        document.getElementById('officialResidentsSearchInput').value = '';
+        redrawOfficialResidentsTable();
+      } else if (sectionId === 'officialReportsSection') {
+        initializeReportsSection();
+      }
+    }
+
+    const showOfficialDashboard = () => showOfficialView('dashboardSection', 'navDashboard');
+    const showOfficialRequests = () => showOfficialView('officialRequestsSection', 'navRequestsReq');
+    const showOfficialResidents = () => showOfficialView('officialResidentsSection', 'navResidentsRes');
+    const showOfficialReports = () => showOfficialView('officialReportsSection', 'navReports');
+
+    // === NOTIFICATION SIDEBAR FUNCTIONS (NEW) ===
+    // Function to generate the time difference string (e.g., "6 hr ago")
+    function timeDifference(dateString) {
+        const now = new Date();
+        // dateString format is YYYY-MM-DD, convert to include time for better accuracy
+        const then = new Date(dateString.includes('T') ? dateString : dateString + 'T08:00:00Z'); 
+        
+        const diffInSeconds = Math.floor((now - then) / 1000);
+
+        if (diffInSeconds < 60) return `${diffInSeconds} sec ago`;
+        const diffInMinutes = Math.floor(diffInSeconds / 60);
+        if (diffInMinutes < 60) return `${diffInMinutes} min ago`;
+        const diffInHours = Math.floor(diffInMinutes / 60);
+        if (diffInHours < 24) return `${diffInHours} hr ago`;
+        const diffInDays = Math.floor(diffInHours / 24);
+        if (diffInDays < 30) return `${diffInDays} d ago`;
+        
+        return then.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }); // Fallback for older
+    }
+
+    // Function to populate and display the alerts
+    function populateNotificationSidebar() {
+        const content = document.getElementById('alertsContent');
+        const title = document.getElementById('sidebarAlertsTitle');
+        content.innerHTML = '';
+        
+        // Combine all relevant activity: Requests (Pending/Approved) and Resident Signups (Pending)
+        // Sort all by date (newest first)
+        const allActivities = [
+            ...allRequests.map(req => ({
+                type: 'request',
+                id: req.id,
+                title: req.status === 'Pending' ? `New Request: ${req.certificateType}` : `Request ${req.status}: ${req.certificateType}`,
+                description: `From ${findResidentName(req.applicantName)}`,
+                date: new Date(req.date + 'T08:00:00Z').getTime(), 
+                originalDate: req.date,
+                status: req.status
+            })),
+            ...allResidents.filter(r => r.status === 'Pending').map(res => ({
+                type: 'signup',
+                id: res.id,
+                title: 'New Resident Signup',
+                description: `${res.fullName} is awaiting approval.`,
+                date: new Date(res.dateRegistered + 'T08:00:00Z').getTime(), 
+                originalDate: res.dateRegistered,
+                status: 'Pending'
+            }))
+        ].sort((a, b) => b.date - a.date);
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        let todayAlertsHtml = '<div class="alert-group-title">TODAY</div>';
+        let olderAlertsHtml = '<div class="alert-group-title">OLDER</div>';
+        let isTodaySectionPopulated = false;
+        let isOlderSectionPopulated = false;
+
+        allActivities.forEach(activity => {
+            const itemDate = new Date(activity.originalDate + 'T08:00:00Z');
+            itemDate.setUTCHours(0, 0, 0, 0); // Use UTC to avoid timezone issues with YYYY-MM-DD
+            
+            const now = new Date();
+            now.setHours(0, 0, 0, 0);
+            const isToday = itemDate.getTime() === now.getTime();
+            
+            let iconClass = 'fas fa-info-circle';
+            let alertClass = '';
+            let viewAction = '';
+            let description = activity.description;
+            
+            if (activity.type === 'request') {
+                iconClass = 'fas fa-file-alt';
+                alertClass = activity.status === 'Pending' ? 'pending' : 'approved';
+                viewAction = `showOfficialRequests(); toggleNotificationSidebar(false); openRequestDetailsModal('${activity.id}')`;
+                description = activity.title;
+            } else if (activity.type === 'signup') {
+                iconClass = 'fas fa-user-plus';
+                alertClass = 'pending'; 
+                viewAction = `showOfficialResidents(); toggleNotificationSidebar(false);`;
+                description = activity.title;
+            }
+
+            const itemHtml = `
+                <div class="alert-item ${alertClass}" style="cursor: pointer;" onclick="${viewAction}">
+                    <div class="icon-wrapper"><i class="${iconClass}"></i></div>
+                    <div class="details">
+                        <div class="title">${description}</div>
+                        <div class="description">${activity.description}</div>
+                        <span class="view-link">View</span>
+                    </div>
+                    <div class="time">${timeDifference(activity.originalDate)}</div>
+                </div>
+            `;
+            
+            if (isToday) {
+                todayAlertsHtml += itemHtml;
+                isTodaySectionPopulated = true;
+            } else {
+                olderAlertsHtml += itemHtml;
+                isOlderSectionPopulated = true;
+            }
+        });
+        
+        // Final render
+        const totalAlerts = allActivities.length;
+        title.textContent = `Alerts (${totalAlerts})`;
+        
+        if (totalAlerts === 0) {
+            content.innerHTML = '<div class="text-muted p-4 text-center">No new alerts. You are all caught up!</div>';
+        } else {
+            content.innerHTML = '';
+            if (isTodaySectionPopulated) {
+                content.innerHTML += todayAlertsHtml;
+            }
+            if (isOlderSectionPopulated) {
+                content.innerHTML += olderAlertsHtml;
+            }
+        }
+    }
+
+    // Function to toggle the sidebar open/closed
+    function toggleNotificationSidebar(forceOpen) {
+        const sidebar = document.getElementById('notificationSidebar');
+        const isCurrentlyOpen = sidebar.classList.contains('open');
+
+        if (forceOpen === true || (forceOpen === undefined && !isCurrentlyOpen)) {
+            populateNotificationSidebar(); // Populate before opening
+            sidebar.classList.add('open');
+            // Add backdrop (using Bootstrap's modal backdrop for consistency)
+            const backdrop = document.createElement('div');
+            backdrop.className = 'modal-backdrop fade show notification-backdrop';
+            backdrop.onclick = () => toggleNotificationSidebar(false);
+            document.body.appendChild(backdrop);
+            document.body.style.overflow = 'hidden'; // Prevent scrolling when open
+        } else {
+            sidebar.classList.remove('open');
+            // Remove backdrop
+            document.querySelector('.notification-backdrop')?.remove();
+            document.body.style.overflow = '';
+        }
+    }
+    // === END NOTIFICATION SIDEBAR FUNCTIONS ===
+    
+    // === HELPER FUNCTIONS ===
+    const findResidentName = (username) => {
+      // Search allResidents
+      const resident = allResidents.find(r => r.username.toLowerCase() === username.toLowerCase());
+      return resident ? resident.fullName : username;
+    };
+
+    // Function to open the request details modal (for official view)
+    function openRequestDetailsModal(requestId) {
+      const request = allRequests.find(r => r.id === requestId);
+      if (!request) {
+        alert('Request not found.');
+        return;
+      }
+      
+      const residentName = findResidentName(request.applicantName);
+      
+      let statusClass;
+      if (request.status === 'Pending') {
+        statusClass = 'bg-warning text-dark';
+      } else if (request.status === 'Approved' || request.status === 'Issued') {
+        statusClass = 'bg-success text-white';
+      } else {
+        statusClass = 'bg-danger text-white';
+      }
+      
+      // Store the ID globally for modal action handlers
+      window.currentRequestIdForModal = requestId; 
+      
+      document.getElementById('detailRequestId').textContent = request.id;
+      document.getElementById('detailResidentName').textContent = residentName;
+      document.getElementById('detailCertificateType').textContent = request.certificateType;
+      document.getElementById('detailPurpose').textContent = request.purpose;
+      document.getElementById('detailDateRequested').textContent = request.date;
+      document.getElementById('detailNotes').textContent = request.notes || 'N/A'; // Include notes
+      
+      const statusBadge = document.getElementById('detailStatusBadge');
+      statusBadge.textContent = request.status;
+      statusBadge.className = `badge ${statusClass}`; // Update class for styling
+
+      // Show the modal
+      new bootstrap.Modal(document.getElementById('requestDetailsModal')).show();
+    }
+    
+    function updateRequestStatusFromModal(newStatus) {
+      const requestId = window.currentRequestIdForModal;
+      if (!requestId) return;
+
+      if(confirm(`Are you sure you want to change the status of Request ${requestId} to "${newStatus}"?`)) {
+        updateRequestStatus(requestId, newStatus);
+        
+        // Hide modal
+        bootstrap.Modal.getInstance(document.getElementById('requestDetailsModal'))?.hide();
+      }
+    }
+
+    function updateRequestStatus(requestId, newStatus) {
+      const requestIndex = allRequests.findIndex(r => r.id === requestId);
+      if (requestIndex === -1) {
+        alert('Request not found.');
+        return;
+      }
+
+      allRequests[requestIndex].status = newStatus;
+      saveDataToStorage();
+      redrawOfficialRequestsTable();
+      redrawResidentRequestsTable(allRequests[requestIndex].applicantName); // Update resident's view
+      updateDashboardMetrics();
+
+      alert(`Request ${requestId} status updated to ${newStatus}.`);
+    }
+    
+    // === VALIDATION FUNCTIONS (CORRECTED & ENHANCED) ===
+
+    /** 
+     * Clears all validation error messages on a specific form type. 
+     * @param {string} formType 'signup' or 'addResident'
+     */
+    function clearValidationErrors(formType) {
+        const prefix = formType === 'signup' ? 'signup' : 'addResident';
+        const formSelector = formType === 'signup' ? '#residentSignupSection' : '#addResidentModal';
+
+        // Clear all visible errors associated with the form
+        document.querySelectorAll(`${formSelector} .validation-error`).forEach(el => {
+            el.textContent = '';
+            el.style.display = 'none';
+        });
+        // Remove 'is-invalid' class from all inputs in the form
+        document.querySelectorAll(`${formSelector} input`).forEach(input => {
+             input.classList.remove('is-invalid');
+        });
+    }
+
+    /**
+     * Shows an error message for a specific input field.
+     * @param {string} inputId The ID of the input field.
+     * @param {string} message The error message to display.
+     */
+    function showValidationError(inputId, message) {
+        // Validation errors for official Add Resident Modal fields must be added to the HTML 
+        // to have a target div, e.g., <div class="validation-error" id="error-addResidentLastName"></div>
+
+        const errorEl = document.getElementById(`error-${inputId}`);
+        const inputEl = document.getElementById(inputId);
+        if (errorEl && inputEl) {
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+            inputEl.classList.add('is-invalid');
+            return false;
+        } else if (inputEl) {
+            // For fields where we don't have a dedicated error div (like in modals),
+            // use Bootstrap's standard invalid feedback if structure allows
+             inputEl.classList.add('is-invalid');
+        }
+        return false;
+    }
+
+    /**
+     * Validates a single Resident Signup or Add Resident form field based on its configuration.
+     * @param {object} fieldConfig - The configuration object for the field (id, name, pattern, msg, min, max, check).
+     * @param {boolean} isSignupForm - True if validating the signup form, false for Add Resident form.
+     * @returns {boolean} True if validation passes, false otherwise.
+     */
+    function validateSingleField(fieldConfig, isSignupForm) {
+        const inputEl = document.getElementById(fieldConfig.id);
+        if (!inputEl) return true;
+
+        const value = inputEl.value.trim();
+        let fieldValid = true;
+
+        // Clear previous error state for this specific field
+        inputEl.classList.remove('is-invalid');
+        const errorEl = document.getElementById(`error-${fieldConfig.id}`);
+        if (errorEl) {
+            errorEl.textContent = '';
+            errorEl.style.display = 'none';
+        }
+
+        // 1. Check if required (if value is empty)
+        if (inputEl.hasAttribute('required') && value === '') {
+            showValidationError(fieldConfig.id, `${fieldConfig.name} is required.`);
+            return false; // Stop validation for this field if it's empty and required
+        }
+
+        // 2. Check Pattern (for non-empty values that have a pattern)
+        if (fieldConfig.pattern && !fieldConfig.pattern.test(value) && value !== '') {
+            showValidationError(fieldConfig.id, `${fieldConfig.name}: ${fieldConfig.msg}`);
+            fieldValid = false;
+        } 
+        
+        // 3. Check custom check function (for non-empty values that have a check)
+        else if (fieldConfig.check && !fieldConfig.check(value) && value !== '') {
+             showValidationError(fieldConfig.id, `${fieldConfig.name}: ${fieldConfig.msg}`);
+             fieldValid = false;
+        } 
+        
+        // 4. Check min/max (for age)
+        else if (fieldConfig.min && (parseInt(value) < fieldConfig.min || parseInt(value) > fieldConfig.max) && value !== '') {
+             showValidationError(fieldConfig.id, `Age must be between ${fieldConfig.min} and ${fieldConfig.max}.`);
+             fieldValid = false;
+        }
+        
+        // 5. Specific check for Username (existence) - Applies to both forms
+        if ((fieldConfig.id === 'signupUsername' || fieldConfig.id === 'addResidentUsername') && fieldValid) {
+            if (value !== '') { 
+                const usernameExists = allResidents.some(r => r.username.toLowerCase() === value.toLowerCase());
+                if (usernameExists) {
+                     showValidationError(fieldConfig.id, 'This username is already taken. Please choose another.');
+                     fieldValid = false;
+                }
+            }
+        }
+        
+        // 6. Specific check for Email (existence) - Applies to both forms
+        if ((fieldConfig.id === 'signupEmail' || fieldConfig.id === 'addResidentEmail') && fieldValid) {
+             if (value !== '') {
+                // If we are in the edit resident modal, we should skip the existence check for the *current* resident's email
+                let currentId = isSignupForm ? null : document.getElementById('editResidentId')?.value;
+                
+                const emailExists = allResidents.some(r => 
+                    r.email.toLowerCase() === value.toLowerCase() && 
+                    r.id !== currentId
+                );
+
+                if (emailExists) {
+                     showValidationError(fieldConfig.id, 'This email is already registered.');
+                     fieldValid = false;
+                }
+             }
+        }
+
+
+        return fieldValid;
+    }
+    
+    // --- SIGNUP FORM VALIDATION LISTENERS ---
+    
+    /**
+     * Attaches blur listeners to signup fields for real-time validation feedback.
+     */
+    function attachSignupBlurListeners() {
+        // Define all fields to validate on blur
+        const fields = [
+            { id: 'signupLastName', name: 'Last Name', pattern: /^[A-Za-z\s-']+$/, msg: 'Letters, spaces, hyphens, and apostrophes only.' },
+            { id: 'signupFirstName', name: 'First Name', pattern: /^[A-Za-z\s-']+$/, msg: 'Letters, spaces, hyphens, and apostrophes only.' },
+            { id: 'signupMiddleName', name: 'Middle Name', pattern: /^[A-Za-z\s-']*$/, msg: 'Letters, spaces, hyphens, and apostrophes only.' },
+            { id: 'signupAge', name: 'Age', pattern: /^[0-9]+$/, msg: 'Numbers only.', min: 1, max: 120 },
+            { id: 'signupContact', name: 'Contact Number', pattern: /^[0-9]{7,15}$/, msg: 'Numbers only (7-15 digits expected).' },
+            { id: 'signupEmail', name: 'Email', check: (v) => v.includes('@'), msg: 'Email must contain "@".' },
+            { id: 'signupUsername', name: 'Username' },
+            { id: 'signupPassword', name: 'Password' },
+            { id: 'signupAddress', name: 'Address' },
+        ];
+
+        fields.forEach(field => {
+            const inputEl = document.getElementById(field.id);
+            if (inputEl) {
+                // Attach the single field validation on blur (isSignupForm = true)
+                inputEl.addEventListener('blur', () => {
+                    validateSingleField(field, true);
+                });
+            }
+        });
+
+        // Special listener for Confirm Password to check matching against Password
+        const confirmPassEl = document.getElementById('signupConfirmPassword');
+        if (confirmPassEl) {
+            confirmPassEl.addEventListener('blur', () => {
+                const password = document.getElementById('signupPassword').value;
+                const confirmPassword = confirmPassEl.value;
+                
+                // Clear previous error state
+                confirmPassEl.classList.remove('is-invalid');
+                document.getElementById('error-signupConfirmPassword').textContent = '';
+                document.getElementById('error-signupConfirmPassword').style.display = 'none';
+                
+                if (confirmPassword.trim() === '') {
+                    showValidationError('signupConfirmPassword', 'Confirm Password is required.');
+                } else if (password !== confirmPassword) {
+                     showValidationError('signupConfirmPassword', 'Passwords do not match.');
+                }
+            });
+        }
+    }
+    
+    /**
+     * Validates the Resident Sign Up form fields for final submission.
+     * @returns {boolean} True if validation passes, false otherwise.
+     */
+    function validateResidentSignupForm() {
+        clearValidationErrors('signup'); // Start with a clean slate
+        let isValid = true; 
+        
+        const inputsToValidate = [
+            { id: 'signupLastName', name: 'Last Name', pattern: /^[A-Za-z\s-']+$/, msg: 'Letters, spaces, hyphens, and apostrophes only.' },
+            { id: 'signupFirstName', name: 'First Name', pattern: /^[A-Za-z\s-']+$/, msg: 'Letters, spaces, hyphens, and apostrophes only.' },
+            { id: 'signupMiddleName', name: 'Middle Name', pattern: /^[A-Za-z\s-']*$/, msg: 'Letters, spaces, hyphens, and apostrophes only.' },
+            { id: 'signupAge', name: 'Age', pattern: /^[0-9]+$/, msg: 'Numbers only.', min: 1, max: 120 },
+            { id: 'signupContact', name: 'Contact Number', pattern: /^[0-9]{7,15}$/, msg: 'Numbers only (7-15 digits expected).' },
+            { id: 'signupEmail', name: 'Email', check: (v) => v.includes('@'), msg: 'Email must contain "@".' },
+            { id: 'signupUsername', name: 'Username' },
+            { id: 'signupPassword', name: 'Password' },
+            { id: 'signupAddress', name: 'Address' },
+        ];
+        
+        // Run single field validation for all fields, accumulating the validity check
+        inputsToValidate.forEach(field => {
+            if (!validateSingleField(field, true)) { // isSignupForm = true
+                isValid = false;
+            }
+        });
+        
+        // Password Match Check (Must run here for final submission)
+        const password = document.getElementById('signupPassword').value;
+        const confirmPassword = document.getElementById('signupConfirmPassword').value;
+        if (password !== confirmPassword || confirmPassword.trim() === '') {
+             if (confirmPassword.trim() === '') {
+                showValidationError('signupConfirmPassword', 'Confirm Password is required.');
+             } else {
+                 showValidationError('signupConfirmPassword', 'Passwords do not match.');
+             }
+             isValid = false; 
+        }
+
+        return isValid;
+    }
+    
+    // --- ADD RESIDENT MODAL VALIDATION LISTENERS (NEW) ---
+
+    /**
+     * Defines validation rules for the Add Resident fields.
+     */
+    const addResidentFieldsValidation = [
+        { id: 'addResidentLastName', name: 'Last Name', pattern: /^[A-Za-z\s-']+$/, msg: 'Letters, spaces, hyphens, and apostrophes only.' },
+        { id: 'addResidentFirstName', name: 'First Name', pattern: /^[A-Za-z\s-']+$/, msg: 'Letters, spaces, hyphens, and apostrophes only.' },
+        { id: 'addResidentMiddleName', name: 'Middle Name', pattern: /^[A-Za-z\s-']*$/, msg: 'Letters, spaces, hyphens, and apostrophes only.' },
+        { id: 'addResidentAge', name: 'Age', pattern: /^[0-9]+$/, msg: 'Numbers only.', min: 1, max: 120 },
+        { id: 'addResidentContact', name: 'Contact Number', pattern: /^[0-9]{7,15}$/, msg: 'Numbers only (7-15 digits expected).' },
+        { id: 'addResidentEmail', name: 'Email', check: (v) => v.includes('@'), msg: 'Email must contain "@".' },
+        { id: 'addResidentAddress', name: 'Address' },
+        { id: 'addResidentUsername', name: 'Username' }, // NEW: Added Username validation
+        { id: 'addResidentPassword', name: 'Password' }, // NEW: Added Password validation
+    ];
+    
+    /**
+     * Attaches blur listeners to Add Resident modal fields for real-time validation feedback.
+     */
+    function attachAddResidentBlurListeners() {
+        addResidentFieldsValidation.forEach(field => {
+            const inputEl = document.getElementById(field.id);
+            if (inputEl) {
+                // Attach the single field validation on blur (isSignupForm = false)
+                inputEl.addEventListener('blur', () => {
+                    validateSingleField(field, false); 
+                });
+            }
+        });
+    }
+
+    /**
+     * Validates the Add Resident form fields for final submission.
+     * @returns {boolean} True if validation passes, false otherwise.
+     */
+    function validateAddResidentForm() {
+        // Since the Add Resident fields are inside a modal and use the same validation logic,
+        // we use clearValidationErrors('addResident') to clear their specific error messages.
+        clearValidationErrors('addResident'); 
+        let isValid = true; 
+        
+        // Run single field validation for all fields, accumulating the validity check
+        addResidentFieldsValidation.forEach(field => {
+            if (!validateSingleField(field, false)) { // isSignupForm = false
+                isValid = false;
+            }
+        });
+        
+        return isValid;
+    }
+    
+    // === AUTHENTICATION HANDLERS ===
+    function handleOfficialLogin(e) {
+      e.preventDefault();
+      const username = document.getElementById('officialUsername').value.trim();
+      const password = document.getElementById('officialPassword').value;
+      const errorDiv = document.getElementById('officialLoginError');
+      errorDiv.style.display = 'none';
+
+      if (username === 'admin' && password === 'admin') {
+        // Set the officialUserName globally (used by showOfficialView)
+        document.getElementById('officialUsername').value = '';
+        document.getElementById('officialPassword').value = '';
+        document.getElementById('officialUserName').textContent = username + ' (Barangay Official)';
+        showOfficialView('dashboardSection', 'navDashboard');
+      } else {
+        errorDiv.textContent = 'Incorrect username or password.';
+        errorDiv.style.display = 'block';
+        document.getElementById('officialPassword').value = '';
+      }
+    }
+
+    function handleResidentLogin(e) {
+      e.preventDefault();
+      const username = document.getElementById('residentUsername').value.trim().toLowerCase();
+      const password = document.getElementById('residentPassword').value;
+      const errorDiv = document.getElementById('residentLoginError');
+      errorDiv.style.display = 'none'; // Clear previous errors
+
+      // Check if the user exists and password matches
+      const residentFound = allResidents.find(r => 
+        r.username.toLowerCase() === username && 
+        r.passwordHash === password
+      );
+
+      if (!residentFound) {
+        errorDiv.textContent = "Incorrect username or password."; 
+        errorDiv.style.display = 'block';
+        document.getElementById('residentPassword').value = '';
+        return;
+      }
+      
+      // Allow login regardless of 'Pending' status (as requested)
+      
+      showSection('residentPortalSection', true);
+      currentResidentUsername = username;
+      document.getElementById('portalUserName').textContent = residentFound.fullName;
+      document.getElementById('welcomeHeading').textContent = `Welcome, ${residentFound.fullName}!`;
+      document.getElementById('residentPassword').value = '';
+      
+      // NEW: Update resident portal welcome text based on approval status
+      const welcomeTextEl = document.getElementById('welcomeText');
+      if (residentFound.status === 'Pending') {
+          // Display warning, but allow them to apply for certificates (restriction removed below)
+          welcomeTextEl.innerHTML = '<span class="text-warning"><i class="fas fa-exclamation-triangle"></i> Your account is pending official registration. Requests submitted now will be processed once approved.</span>';
+      } else {
+          welcomeTextEl.textContent = 'Manage your certificate requests here.';
+      }
+      
+      redrawResidentRequestsTable(username);
+    }
+
+    function handleResidentSignup(e) {
+      e.preventDefault();
+      const form = e.target;
+      
+      if (!validateResidentSignupForm()) {
+          // Validation failed, errors are already shown by the blur listeners and the final check
+          return;
+      }
+      
+      const newUsername = form.signupUsername.value.trim();
+      const password = form.signupPassword.value;
+
+      // NOTE: Password match and Username existence check is handled in validateResidentSignupForm()
+      
+      // NEW: Capture individual name parts
+      const lastName = form.signupLastName.value.trim();
+      const firstName = form.signupFirstName.value.trim();
+      const middleName = form.signupMiddleName.value.trim();
+      // Concatenate for display, placing last name first
+      const fullName = `${lastName}, ${firstName}${middleName ? ' ' + middleName : ''}`;
+
+      // Add the new resident immediately to allResidents with 'Pending' status
+      const newResident = {
+        id: 'RES-' + Date.now(),
+        fullName: fullName, // Concatenated for display
+        lastName: lastName, // NEW: Separate name fields
+        firstName: firstName,
+        middleName: middleName,
+        age: form.signupAge.value.trim(), 
+        address: form.signupAddress.value.trim(),
+        contact: form.signupContact.value.trim(),
+        email: form.signupEmail.value.trim(),
+        username: newUsername,
+        passwordHash: password, 
+        dateRegistered: new Date().toISOString().split('T')[0],
+        status: 'Pending' // KEPT AS PENDING
+      };
+
+      allResidents.push(newResident);
+      saveDataToStorage();
+      updateDashboardMetrics(); 
+      alert('Sign up successful! You can now log in using your new credentials and submit requests.');
+      showResidentLogin();
+    }
+
+    // === OFFICIAL RESIDENT MANAGEMENT FUNCTIONS (Modified) ===
+    // Implemented Edit functionality: opens the modal and populates fields
+    function editResident(residentId) {
+      const resident = allResidents.find(r => r.id === residentId);
+      if (!resident) {
+        alert('Resident not found.');
+        return;
+      }
+
+      // Populate the modal fields
+      document.getElementById('editResidentId').value = resident.id;
+      // Populate split name fields
+      document.getElementById('editResidentLastName').value = resident.lastName || '';
+      document.getElementById('editResidentFirstName').value = resident.firstName || '';
+      document.getElementById('editResidentMiddleName').value = resident.middleName || '';
+      
+      document.getElementById('editResidentAge').value = resident.age || ''; 
+      document.getElementById('editResidentAddress').value = resident.address;
+      document.getElementById('editResidentContact').value = resident.contact;
+      document.getElementById('editResidentEmail').value = resident.email;
+      document.getElementById('editResidentUsername').value = resident.username;
+
+      // Show the modal
+      new bootstrap.Modal(document.getElementById('editResidentModal')).show();
+    }
+
+    // New handler to submit the edited resident data
+    function handleEditResident(e) {
+      e.preventDefault();
+      const residentId = document.getElementById('editResidentId').value;
+      const residentIndex = allResidents.findIndex(r => r.id === residentId);
+
+      if (residentIndex === -1) {
+        alert('Error: Resident not found for update.');
+        return;
+      }
+
+      const form = e.target;
+      
+      // Update individual name fields
+      const lastName = form.editResidentLastName.value.trim();
+      const firstName = form.editResidentFirstName.value.trim();
+      const middleName = form.editResidentMiddleName.value.trim();
+      const fullName = `${lastName}, ${firstName}${middleName ? ' ' + middleName : ''}`;
+
+      // Update the resident object
+      allResidents[residentIndex].lastName = lastName;
+      allResidents[residentIndex].firstName = firstName;
+      allResidents[residentIndex].middleName = middleName;
+      allResidents[residentIndex].fullName = fullName; // Update concatenated name
+      
+      allResidents[residentIndex].age = form.editResidentAge.value.trim(); // Save the age
+      allResidents[residentIndex].address = form.editResidentAddress.value.trim();
+      allResidents[residentIndex].contact = form.editResidentContact.value.trim();
+
+      // Email and Username are disabled/read-only so we don't update them here.
+      saveDataToStorage();
+      alert(`Resident "${allResidents[residentIndex].fullName}" updated successfully!`);
+      // Close modal
+      bootstrap.Modal.getInstance(document.getElementById('editResidentModal'))?.hide();
+      redrawOfficialResidentsTable();
+    }
+    
+    // New Delete functionality
+    function deleteResident(residentId, residentName) {
+      if (confirm(`Are you sure you want to permanently delete resident: ${residentName}? This action cannot be undone.`)) {
+        const initialLength = allResidents.length;
+        // Remove the resident from the array
+        allResidents = allResidents.filter(r => r.id !== residentId);
+        
+        if (allResidents.length < initialLength) {
+          saveDataToStorage();
+          redrawOfficialResidentsTable();
+          updateDashboardMetrics(); // Update resident count on dashboard
+          alert(`Resident ${residentName} has been deleted.`);
+        } else {
+          alert(`Error: Resident ID ${residentId} not found.`);
+        }
+      }
+    }
+
+    function openAddResidentModal() {
+      document.getElementById('addResidentForm').reset();
+      clearValidationErrors('addResident'); // Clear validation errors before showing
+      new bootstrap.Modal(document.getElementById('addResidentModal')).show();
+    }
+
+    function handleAddResident(e) {
+      e.preventDefault();
+      const form = e.target;
+      
+      if (!validateAddResidentForm()) {
+          // Validation failed, errors are already shown by the blur listeners and the final check
+          return;
+      }
+      
+      // *** MODIFICATION: Get Username and Password from input fields ***
+      const lastName = form.addResidentLastName.value.trim();
+      const firstName = form.addResidentFirstName.value.trim();
+      const contact = form.addResidentContact.value.trim();
+      
+      const newUsername = form.addResidentUsername.value.trim(); // CHANGED: Get from form
+      const newPassword = form.addResidentPassword.value; // CHANGED: Get from form
+      // *** END MODIFICATION ***
+
+      // Concatenate for display, placing last name first
+      const middleName = form.addResidentMiddleName.value.trim();
+      const fullName = `${lastName}, ${firstName}${middleName ? ' ' + middleName : ''}`;
+
+      // For a real application, we'd need a backend check here, but for this local storage model, 
+      // we'll proceed since the official is manually entering.
+      
+      const newResident = {
+        id: 'RES-' + Date.now(),
+        fullName: fullName, // Concatenated for display
+        lastName: lastName, // NEW: Separate name fields
+        firstName: firstName,
+        middleName: middleName,
+        age: form.addResidentAge.value.trim(),
+        address: form.addResidentAddress.value.trim(),
+        contact: contact,
+        email: form.addResidentEmail.value.trim(),
+        // *** MODIFIED: Use input field values for username and password ***
+        username: newUsername,
+        passwordHash: newPassword, // Use input value as passwordHash
+        // *** END MODIFIED ***
+        dateRegistered: new Date().toISOString().split('T')[0],
+        status: 'Registered' // NEW: Official additions are immediately 'Registered'
+      };
+
+      allResidents.push(newResident);
+      saveDataToStorage();
+      
+      // *** MODIFIED: Update alert message to show actual credentials ***
+      alert(`Resident "${newResident.fullName}" added and Registered successfully!
+        \n(Credentials: Username: ${newUsername}, Password: ${newPassword})`); 
+      // *** END MODIFIED ***
+      
+      // Close modal
+      bootstrap.Modal.getInstance(document.getElementById('addResidentModal'))?.hide();
+      form.reset();
+      redrawOfficialResidentsTable();
+      updateDashboardMetrics();
+    }
+    
+    // NEW: Function to approve a pending resident
+    function approveResident(residentId, residentName) {
+        if (confirm(`Are you sure you want to approve and Register resident: ${residentName}?`)) {
+            const residentIndex = allResidents.findIndex(r => r.id === residentId);
+            if (residentIndex !== -1) {
+                allResidents[residentIndex].status = 'Registered';
+                saveDataToStorage();
+                redrawOfficialResidentsTable();
+                updateDashboardMetrics();
+                
+                // Update resident portal welcome text if they happen to be logged in
+                const resident = allResidents[residentIndex];
+                if (resident.username.toLowerCase() === currentResidentUsername.toLowerCase()) {
+                    document.getElementById('welcomeText').textContent = 'Manage your certificate requests here.';
+                }
+
+                alert(`Resident ${residentName} has been Registered and can now submit requests.`);
+            } else {
+                alert(`Error: Resident ID ${residentId} not found.`);
+            }
+        }
+    }
+
+    // === DASHBOARD & TABLE UPDATE FUNCTIONS ===
+    function updateDashboardMetrics() {
+      const pendingCount = allRequests.filter(req => req.status === 'Pending').length;
+      // MODIFIED: Only count 'Registered' residents for the dashboard metric
+      const totalResidentsCount = allResidents.filter(r => r.status === 'Registered' || r.status === 'Approved').length; 
+      const totalIssuedCount = allRequests.filter(req => req.status === 'Issued').length; 
+
+      // Update counts
+      document.getElementById('pendingRequestsCount').textContent = pendingCount;
+      document.getElementById('totalResidentsCount').textContent = totalResidentsCount;
+      document.querySelector('#dashboardSection .icon-wrapper.certificates + .card-content h2').textContent = totalIssuedCount;
+      
+      // Total alerts update happens in showOfficialView
+      // The badge value is updated in showOfficialView using totalAlertsCount (requests + signups)
+
+      // Update Recent Activity
+      const activityContainer = document.getElementById('recentActivityContainer');
+      activityContainer.innerHTML = '';
+      const recentActivities = [...allRequests]
+        .sort((a, b) => new Date(b.date) - new Date(a.date))
+        .slice(0, 100);
+
+      if (recentActivities.length === 0) {
+        activityContainer.innerHTML = '<div class="text-muted p-2">No recent activity to display.</div>';
+      } else {
+        recentActivities.forEach(req => {
+          const name = findResidentName(req.applicantName);
+          const div = document.createElement('div');
+          div.className = 'recent-activity-item';
+          div.innerHTML = `
+            <div class="activity-icon"><i class="fas fa-file-alt"></i></div>
+            <div class="activity-details">
+                <div class="name">${name}</div>
+                <div class="description">requested a ${req.certificateType}.</div>
+            </div>
+            <div class="activity-date">${req.date}</div>
+          `;
+          activityContainer.appendChild(div);
+        });
+      }
+    }
+    
+    /**
+     * Filters and redraws the official requests table.
+     * @param {string} searchTerm The search term from the input field.
+     */
+    function redrawOfficialRequestsTable(searchTerm = '') {
+      const tbody = document.getElementById('officialRequestsTbody');
+      tbody.innerHTML = '';
+
+      let requests = [...allRequests].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      // NEW: Filtering logic
+      const lowerCaseSearch = searchTerm.toLowerCase().trim();
+      if (lowerCaseSearch) {
+          requests = requests.filter(req => {
+              const residentName = findResidentName(req.applicantName).toLowerCase();
+              return req.id.toLowerCase().includes(lowerCaseSearch) ||
+                     residentName.includes(lowerCaseSearch) ||
+                     req.certificateType.toLowerCase().includes(lowerCaseSearch) ||
+                     req.status.toLowerCase().includes(lowerCaseSearch);
+          });
+      }
+      // END NEW: Filtering logic
+
+      if (requests.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-muted text-center py-4">No requests found.</td></tr>';
+        return;
+      }
+
+      requests.forEach(req => {
+        const name = findResidentName(req.applicantName);
+        let statusClass, actionsHtml;
+
+        if (req.status === 'Pending') {
+          statusClass = 'bg-warning text-dark';
+          // Use icons for actions and open modal
+          actionsHtml = `
+            <a href="#" class="text-primary me-2" onclick="openRequestDetailsModal('${req.id}')" title="View"><i class="fas fa-eye"></i></a>
+            <a href="#" class="text-success me-2" onclick="updateRequestStatus('${req.id}', 'Approved')" title="Approve"><i class="fas fa-check-circle"></i></a>
+            <a href="#" class="text-danger" onclick="updateRequestStatus('${req.id}', 'Denied')" title="Deny"><i class="fas fa-times-circle"></i></a>
+          `;
+        } else if (req.status === 'Approved') {
+          statusClass = 'bg-success text-white';
+          actionsHtml = `
+            <a href="#" class="text-primary me-2" onclick="openRequestDetailsModal('${req.id}')" title="View"><i class="fas fa-eye"></i></a>
+            <a href="#" class="text-info me-2" onclick="updateRequestStatus('${req.id}', 'Issued')" title="Mark as Issued"><i class="fas fa-print"></i></a>
+            <a href="#" class="text-danger" onclick="updateRequestStatus('${req.id}', 'Denied')" title="Deny/Revoke"><i class="fas fa-times-circle"></i></a>
+          `;
+        } else if (req.status === 'Issued') {
+          statusClass = 'bg-primary text-white'; // Change Issued to bg-primary
+          actionsHtml = `
+            <a href="#" class="text-primary me-2" onclick="openRequestDetailsModal('${req.id}')" title="View"><i class="fas fa-eye"></i></a>
+            <span class="text-muted" title="Issued"><i class="fas fa-check"></i></span>
+          `;
+        } else {
+          statusClass = 'bg-danger text-white';
+          actionsHtml = `
+            <a href="#" class="text-primary me-2" onclick="openRequestDetailsModal('${req.id}')" title="View"><i class="fas fa-eye"></i></a>
+            <span class="text-muted" title="Denied"><i class="fas fa-times"></i></span>
+          `;
+        }
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${req.id}</td>
+          <td>${name}</td>
+          <td>${req.certificateType}</td>
+          <td>${req.date}</td>
+          <td><span class="badge ${statusClass}">${req.status}</span></td>
+          <td>${actionsHtml}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    /**
+     * New function to handle search input for official requests.
+     */
+    function filterOfficialRequests() {
+      const searchTerm = document.getElementById('officialRequestsSearchInput').value;
+      redrawOfficialRequestsTable(searchTerm);
+    }
+
+    // MODIFIED: This function now displays ALL residents (Pending and Registered/Approved)
+    /**
+     * Filters and redraws the official residents table.
+     * @param {string} searchTerm The search term from the input field.
+     */
+    function redrawOfficialResidentsTable(searchTerm = '') {
+      const tbody = document.getElementById('officialResidentsTbody');
+      tbody.innerHTML = '';
+      
+      // Get a copy of all residents and apply search filter
+      let residentsToDisplay = [...allResidents];
+      
+      const lowerCaseSearch = searchTerm.toLowerCase().trim();
+      if (lowerCaseSearch) {
+          residentsToDisplay = residentsToDisplay.filter(resident => {
+              return resident.fullName.toLowerCase().includes(lowerCaseSearch) ||
+                     (resident.address && resident.address.toLowerCase().includes(lowerCaseSearch)) ||
+                     (resident.contact && resident.contact.toLowerCase().includes(lowerCaseSearch)) ||
+                     (resident.email && resident.email.toLowerCase().includes(lowerCaseSearch)) ||
+                     resident.username.toLowerCase().includes(lowerCaseSearch) ||
+                     resident.status.toLowerCase().includes(lowerCaseSearch);
+          });
+      }
+      
+      // Sort: Pending residents first, then Registered/Approved residents alphabetically
+      const combinedResidents = residentsToDisplay.sort((a, b) => {
+          if (a.status === 'Pending' && b.status !== 'Pending') return -1;
+          if (a.status !== 'Pending' && b.status === 'Pending') return 1;
+          return a.fullName.localeCompare(b.fullName);
+      });
+
+      if (combinedResidents.length === 0) { 
+        tbody.innerHTML = '<tr><td colspan="8" class="text-muted text-center py-4">No residents match your search criteria.</td></tr>';
+      } else {
+        combinedResidents.forEach(resident => {
+          let statusClass, actionsHtml, rowClass = '';
+
+          if (resident.status === 'Pending') {
+            statusClass = 'bg-warning text-dark';
+            rowClass = 'pending-resident-row';
+            // Actions for pending residents: Approve or Delete
+            actionsHtml = `
+              <a href="#" class="text-success me-2" onclick="approveResident('${resident.id}', '${resident.fullName}')" title="Approve"><i class="fas fa-check-circle"></i> Approve</a>
+              <a href="#" class="text-danger" onclick="deleteResident('${resident.id}', '${resident.fullName}')" title="Delete"><i class="fas fa-trash"></i></a>
+            `;
+          } else {
+            statusClass = 'bg-success text-white';
+            // Actions for registered residents: Edit or Delete
+            actionsHtml = `
+              <a href="#" class="text-warning me-2" onclick="editResident('${resident.id}')" title="Edit"><i class="fas fa-edit"></i></a>
+              <a href="#" class="text-danger" onclick="deleteResident('${resident.id}', '${resident.fullName}')" title="Delete"><i class="fas fa-trash"></i></a>
+            `;
+          }
+          
+          const tr = document.createElement('tr');
+          tr.className = rowClass;
+          tr.innerHTML = `
+            <td>${resident.fullName}</td>
+            <td>${resident.age || 'N/A'}</td>
+            <td>${resident.address}</td>
+            <td>${resident.contact}</td>
+            <td>${resident.email}</td>
+            <td>${resident.username}</td>
+            <td><span class="badge ${statusClass}">${resident.status || 'N/A'}</span></td>
+            <td>${actionsHtml}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      const totalRegistered = allResidents.filter(r => r.status === 'Registered' || r.status === 'Approved').length;
+      const totalPending = allResidents.filter(r => r.status === 'Pending').length;
+      
+      // Update the footer text based on the full list count, not the filtered list
+      document.getElementById('residentsCountText').textContent = `Showing ${combinedResidents.length} Results (Total: ${totalRegistered} Registered, ${totalPending} Pending Signups).`;
+    }
+    
+    /**
+     * New function to handle search input for official residents.
+     */
+    function filterOfficialResidents() {
+      const searchTerm = document.getElementById('officialResidentsSearchInput').value;
+      redrawOfficialResidentsTable(searchTerm);
+    }
+    // END MODIFICATION FOR RESIDENTS SEARCH
+
+    function redrawResidentRequestsTable(username) {
+      const tbody = document.getElementById('residentRequestsTbody');
+      tbody.innerHTML = '';
+      const userRequests = allRequests
+        .filter(req => req.applicantName.toLowerCase() === username.toLowerCase())
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      if (userRequests.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="text-muted">You have not made any requests yet.</td></tr>';
+        return;
+      }
+
+      userRequests.forEach((req, index) => {
+        let statusClass;
+        if (req.status === 'Pending') {
+          statusClass = 'bg-warning text-dark';
+        } else if (req.status === 'Approved' || req.status === 'Issued') {
+          statusClass = 'bg-success text-white';
+        } else {
+          statusClass = 'bg-danger text-white';
+        }
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${index + 1}</td> 
+            <td>${req.certificateType}</td> 
+            <td>${req.date}</td> 
+            <td><span class="badge ${statusClass}">${req.status}</span></td> 
+            <td style="text-align:left; max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${req.purpose || 'N/A'}</td>`;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // === MODAL & SUBMISSION HANDLERS ===
+    // Resident-only modal opener
+    function openApplicationModal() {
+      // *** MODIFICATION HERE: Removed the check that blocked application submission for 'Pending' users. ***
+      // Now, any logged-in resident (Pending or Registered) can submit a request.
+
+      const resident = allResidents.find(r => r.username.toLowerCase() === currentResidentUsername.toLowerCase());
+      
+      document.getElementById('applicationForm').reset();
+      // Auto-fill resident details (disabled and readonly fields)
+      if (resident) {
+        document.getElementById('applicantFullName').value = resident.fullName;
+        document.getElementById('applicantAddress').value = resident.address;
+        document.getElementById('applicantContact').value = resident.contact;
+      }
+      new bootstrap.Modal(document.getElementById('applicationModal')).show();
+    }
+
+    function handleSubmitRequest(e) {
+      e.preventDefault();
+      const form = e.target;
+      const applicantFullName = document.getElementById('applicantFullName').value.trim();
+      const applicantAddress = document.getElementById('applicantAddress').value.trim();
+      const applicantContact = document.getElementById('applicantContact').value.trim();
+      const cert = form.certificateTypeSelect.value;
+      const purpose = form.requestPurpose.value.trim();
+
+      const applicantUsername = currentResidentUsername; // Use the currently logged-in resident's username
+      
+      // Request submitted by a user is always 'Pending' until official action
+      const newRequest = {
+        id: 'REQ-' + Date.now(),
+        applicantName: applicantUsername,
+        certificateType: cert,
+        date: new Date().toISOString().split('T')[0],
+        status: 'Pending',
+        purpose: purpose,
+        notes: `Address: ${applicantAddress}, Contact: ${applicantContact}` // Combine other details into notes
+      };
+
+      allRequests.push(newRequest);
+      saveDataToStorage();
+      updateDashboardMetrics(); // Update admin view metrics
+      alert(`Certificate Request for "${cert}" Submitted! We will notify you once it is processed.`);
+      redrawResidentRequestsTable(currentResidentUsername); // Redraw resident table
+      // Hide the modal
+      bootstrap.Modal.getInstance(document.getElementById('applicationModal'))?.hide();
+      form.reset();
+    }
+
+    // === NEW OFFICIAL CERTIFICATE REQUEST MODAL FUNCTIONS (Dedicated) ===
+    // Listener to populate the resident select list when the modal is shown
+    const newRequestModal = document.getElementById('newRequestModal');
+    if (newRequestModal) {
+      newRequestModal.addEventListener('show.bs.modal', function (event) {
+        const selectElement = document.getElementById('officialRequestorSelect');
+        const nameField = document.getElementById('officialRequestorName');
+        const addressField = document.getElementById('officialRequestorAddress');
+        const contactField = document.getElementById('officialContactNumber');
+        const emailField = document.getElementById('officialEmailAddress');
+        // MODIFIED: Filter only Registered/Approved residents for official requests
+        const sortedResidents = allResidents
+            .filter(r => r.status === 'Registered' || r.status === 'Approved')
+            .sort((a, b) => a.fullName.localeCompare(b.fullName));
+
+        // Clear previous options
+        selectElement.innerHTML = '<option value="" disabled selected>Choose a registered resident...</option>';
+        // Clear auto-filled fields
+        nameField.value = '';
+        addressField.value = '';
+        contactField.value = '';
+        emailField.value = '';
+
+        if (sortedResidents.length === 0) {
+            // Note: The modal will still show, but the dropdown will be empty.
+        }
+
+        // Populate options
+        sortedResidents.forEach(r => {
+            const option = document.createElement('option');
+            option.value = r.username;
+            option.textContent = `${r.fullName} (${r.username})`;
+            selectElement.appendChild(option);
+        });
+      });
+
+      // Listener to auto-fill details when resident is selected
+      document.getElementById('officialRequestorSelect').addEventListener('change', function() {
+        const selectedUsername = this.value;
+        const resident = allResidents.find(r => r.username.toLowerCase() === selectedUsername.toLowerCase());
+        if (resident) {
+          document.getElementById('officialRequestorName').value = resident.fullName;
+          document.getElementById('officialRequestorAddress').value = resident.address;
+          document.getElementById('officialContactNumber').value = resident.contact;
+          document.getElementById('officialEmailAddress').value = resident.email;
+        }
+      });
+    }
+
+    function handleOfficialSubmitRequest(e) {
+      e.preventDefault();
+      const form = e.target;
+      const applicantUsername = form.officialRequestorSelect.value;
+      const cert = form.officialCertificateTypeSelect.value;
+      const purpose = form.officialPurpose.value.trim();
+      const notes = form.officialNotes.value.trim();
+      const markApproved = form.officialMarkAsApproved.checked;
+      const resident = allResidents.find(r => r.username.toLowerCase() === applicantUsername.toLowerCase());
+      
+      if (!resident) {
+          alert("Error: Selected resident not found.");
+          return;
+      }
+      
+      const initialStatus = markApproved ? 'Approved' : 'Pending';
+
+      const newRequest = {
+        id: 'REQ-' + Date.now(),
+        applicantName: applicantUsername,
+        certificateType: cert,
+        date: new Date().toISOString().split('T')[0],
+        status: initialStatus,
+        purpose: purpose,
+        notes: notes
+      };
+
+      allRequests.push(newRequest);
+      saveDataToStorage();
+      updateDashboardMetrics(); 
+      redrawOfficialRequestsTable();
+      redrawResidentRequestsTable(applicantUsername); // Update resident table
+      alert(`Certificate Request for "${cert}" for resident ${findResidentName(applicantUsername)} Submitted and marked as **${initialStatus}**!`);
+      
+      // Hide the modal
+      bootstrap.Modal.getInstance(document.getElementById('newRequestModal'))?.hide();
+      form.reset();
+      // Manually clear auto-filled fields upon successful submission
+      document.getElementById('officialRequestorName').value = '';
+      document.getElementById('officialRequestorAddress').value = '';
+      document.getElementById('officialContactNumber').value = '';
+      document.getElementById('officialEmailAddress').value = '';
+    }
+    // === END NEW OFFICIAL CERTIFICATE REQUEST MODAL FUNCTIONS (Dedicated) ===
+
+    // === CHART INITIALIZATION (for Official Dashboard) ===
+    function initializeCharts() {
+      // Destroy existing charts to prevent memory leaks/redraw issues
+      if (window.barChartInstance) {
+        window.barChartInstance.destroy();
+      }
+      if (window.pieChartInstance) {
+        window.pieChartInstance.destroy();
+      }
+
+      // Prepare data for the charts
+      // Mock data generation based on allRequests
+      const today = new Date();
+      const oneWeekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+      const weeklyRequests = [0, 0, 0, 0, 0, 0, 0]; // Mon to Sun
+      const certCounts = {
+        'Barangay Clearance': 0,
+        'Certificate of Indigency': 0,
+        'Certificate of Residency': 0,
+        'Barangay Business Permit': 0,
+      };
+
+      allRequests.forEach(req => {
+        const reqDate = new Date(req.date);
+        
+        // Weekly Data (last 7 days, 0 = Sunday, 1 = Monday, etc.)
+        if (reqDate >= oneWeekAgo && reqDate <= today) {
+            let dayIndex = reqDate.getDay(); 
+            dayIndex = (dayIndex === 0) ? 6 : dayIndex - 1; // Convert to Mon=0, ..., Sun=6
+            weeklyRequests[dayIndex]++;
+        }
+
+        // Certificate Distribution Data
+        if (certCounts.hasOwnProperty(req.certificateType)) {
+          certCounts[req.certificateType]++;
+        } else if (req.certificateType === 'Business Permit') {
+            // Map old 'Business Permit' to new 'Barangay Business Permit' if necessary
+            certCounts['Barangay Business Permit']++;
+        }
+      });
+      
+      // Convert weekly data to the correct Monday-Sunday order for display (Mon, Tue, Wed, Thu, Fri, Sat, Sun)
+      const barChartData = [
+          weeklyRequests[0], 
+          weeklyRequests[1], 
+          weeklyRequests[2], 
+          weeklyRequests[3], 
+          weeklyRequests[4], 
+          weeklyRequests[5], 
+          weeklyRequests[6]
+      ];
+
+      const pieChartLabels = Object.keys(certCounts);
+      const pieChartData = Object.values(certCounts);
+      
+      // Standard chart options
+      const chartOptions = { responsive: true, maintainAspectRatio: false };
+      
+      // Bar Chart for Weekly Request 
+      const barCtx = document.getElementById('barChart');
+      if(barCtx) {
+        window.barChartInstance = new Chart(barCtx, {
+          type: 'bar',
+          data: {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            datasets: [{
+              label: 'Requests',
+              data: barChartData,
+              backgroundColor: '#1a4de8',
+              borderRadius: 5,
+            }]
+          },
+          options: { 
+            ...chartOptions, 
+            scales: { y: { beginAtZero: true } }, 
+            plugins: { legend: { display: false } } 
+          }
+        });
+      }
+
+      // Pie Chart 
+      const pieCtx = document.getElementById('pieChart');
+      if(pieCtx) {
+        window.pieChartInstance = new Chart(pieCtx, {
+          type: 'pie',
+          data: {
+            labels: pieChartLabels,
+            datasets: [{
+              data: pieChartData,
+              backgroundColor: ['#1a4de8', '#ffc107', '#28a745', '#6f42c1'],
+              hoverOffset: 4
+            }]
+          },
+          options: {
+            ...chartOptions,
+            plugins: {
+                legend: { position: 'right' }
+            }
+          }
+        });
+      }
+    }
+    
+    // --- NEW REPORT SECTION FUNCTIONS ---
+    
+    // Function to initialize the Reports Section
+    function initializeReportsSection() {
+        const issuedRequests = allRequests.filter(req => req.status === 'Issued');
+        const pendingSignups = allResidents.filter(r => r.status === 'Pending').length;
+        const registeredResidents = allResidents.filter(r => r.status === 'Registered' || r.status === 'Approved');
+
+        // --- 1. Update Report Cards ---
+        document.getElementById('reportIssuedYTD').textContent = issuedRequests.length;
+        document.getElementById('reportPendingSignups').textContent = pendingSignups;
+        
+        // Mock Household Count (Assuming a simple ratio for mock data, e.g., 2.5 residents per household)
+        const totalHouseholds = Math.ceil(registeredResidents.length / 2.5);
+        document.getElementById('reportTotalHouseholds').textContent = totalHouseholds;
+
+        // --- 2. Resident Population Summary Table ---
+        const ageGroupCounts = {
+            'Minors (0-17)': 0,
+            'Adults (18-59)': 0,
+            'Seniors (60+)': 0
+        };
+        registeredResidents.forEach(r => {
+            const age = parseInt(r.age, 10);
+            if (age >= 0 && age <= 17) ageGroupCounts['Minors (0-17)']++;
+            else if (age >= 18 && age <= 59) ageGroupCounts['Adults (18-59)']++;
+            else if (age >= 60) ageGroupCounts['Seniors (60+)']++;
+        });
+        
+        const summaryTbody = document.getElementById('residentSummaryTable');
+        summaryTbody.innerHTML = `
+            <tr><td>Total Registered Residents</td><td class="text-end fw-bold">${registeredResidents.length}</td></tr>
+            <tr><td>Pending Signups</td><td class="text-end fw-bold">${pendingSignups}</td></tr>
+            <tr><td colspan="2"><hr class="my-1"></td></tr>
+            <tr><td>Minors (0-17)</td><td class="text-end">${ageGroupCounts['Minors (0-17)']}</td></tr>
+            <tr><td>Adults (18-59)</td><td class="text-end">${ageGroupCounts['Adults (18-59)']}</td></tr>
+            <tr><td>Seniors (60+)</td><td class="text-end">${ageGroupCounts['Seniors (60+)']}</td></tr>
+        `;
+
+        // --- 3. Monthly Request Volume Chart ---
+        if (window.monthlyRequestChartInstance) {
+            window.monthlyRequestChartInstance.destroy();
+        }
+        
+        const monthlyCounts = {}; // Key: YYYY-MM
+        issuedRequests.forEach(req => {
+            const monthYear = req.date.substring(0, 7);
+            monthlyCounts[monthYear] = (monthlyCounts[monthYear] || 0) + 1;
+        });
+
+        const sortedMonths = Object.keys(monthlyCounts).sort();
+        const chartLabels = sortedMonths.map(my => new Date(my).toLocaleString('en-US', { month: 'short', year: 'numeric' }));
+        const chartData = sortedMonths.map(my => monthlyCounts[my]);
+
+        const monthlyCtx = document.getElementById('monthlyRequestChart');
+        if(monthlyCtx) {
+            window.monthlyRequestChartInstance = new Chart(monthlyCtx, {
+                type: 'line',
+                data: {
+                    labels: chartLabels,
+                    datasets: [{
+                        label: 'Issued Requests',
+                        data: chartData,
+                        backgroundColor: 'rgba(26, 77, 232, 0.2)', // Light blue
+                        borderColor: '#1a4de8',
+                        tension: 0.4,
+                        fill: true,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true } },
+                    plugins: { legend: { display: true, position: 'top' } }
+                }
+            });
+        }
+        
+        // --- 4. Detailed Issuance Log Table ---
+        const issuanceTbody = document.getElementById('reportIssuanceLogTbody');
+        issuanceTbody.innerHTML = '';
+        
+        // Sort issued requests by date (newest first)
+        const sortedIssuedRequests = issuedRequests.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        if (sortedIssuedRequests.length === 0) {
+            issuanceTbody.innerHTML = '<tr><td colspan="4" class="text-muted text-center py-3">No certificates have been issued yet.</td></tr>';
+        } else {
+            sortedIssuedRequests.slice(0, 10).forEach(req => { // Show last 10 issued
+                const name = findResidentName(req.applicantName);
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${req.date}</td>
+                    <td>${req.certificateType}</td>
+                    <td>${name}</td>
+                    <td>${req.purpose || 'N/A'}</td>
+                `;
+                issuanceTbody.appendChild(tr);
+            });
+        }
+    }
+    
+    // --- END NEW REPORT SECTION FUNCTIONS ---
+
+
+    // === INITIALIZATION ===
+    document.addEventListener('DOMContentLoaded', () => {
+      loadDataFromStorage();
+      goBackToRoleSelection(); // Start at the role selection screen
+      // Initial call to update metrics for the initial state
+      updateDashboardMetrics(); 
+      attachSignupBlurListeners(); // Attach real-time validation listeners for SIGNUP
+      attachAddResidentBlurListeners(); // NEW: Attach real-time validation listeners for ADD RESIDENT
+    });
+  </script>
+</body>
+</html>
